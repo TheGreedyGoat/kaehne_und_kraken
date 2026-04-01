@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_md/flutter_md.dart';
 import 'package:kaehne_und_kraken/utility/file_loader.dart';
 import 'package:kaehne_und_kraken/utility/md_parsers.dart';
-import 'package:kaehne_und_kraken/utility/value_Listeners.dart';
+import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 
 String rulesPath = 'assets/markdown/rules.md';
 

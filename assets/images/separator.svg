@@ -1,0 +1,6 @@
+<!-- sample rectangle -->
+<svg width="400" height="6" xmlns="http://www.w3.org/2000/svg">
+    <svg height="6" width="400" class="tapered-rule">
+    <polyline points="0,0 400,3 0,6" fill = '#922610'></polyline>
+  </svg>
+</svg>
