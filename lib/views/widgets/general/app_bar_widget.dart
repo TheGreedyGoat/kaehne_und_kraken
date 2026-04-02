@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/colors.dart';
 
 class AppBarWidget extends AppBar {
-  final String header;
-  AppBarWidget({super.key, required this.header})
+  AppBarWidget({super.key, super.actions, required String header})
     : super(
         flexibleSpace: Image.asset(
           'assets/images/parchment_bg_dark.png',

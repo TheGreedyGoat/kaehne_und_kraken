@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/widgets/input_field.dart';
 import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 class ShipCreationTitle extends StatefulWidget {
-  final ValueNotifier<String?> nameNotifier;
-  final ValueNotifier<ShipSize?> sizeNotifier;
-  const ShipCreationTitle({
-    super.key,
-    required this.nameNotifier,
-    required this.sizeNotifier,
-  });
+  final bool alert;
+  const ShipCreationTitle({super.key, this.alert = false});
 
   @override
   State<ShipCreationTitle> createState() => _ShipCreationTitleState();
@@ -24,16 +20,22 @@ class _ShipCreationTitleState extends State<ShipCreationTitle> {
         //======SHIP NAME=========//
         InputField(
           label: 'Name',
-          onEditingComplete: (value) {},
+          onEditingComplete: (value) {
+            print(
+              'MNKFGNKLNGLDKFFNKLDFNGERITEOGJERI(%UZT%HTV TZ(%T))DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',
+            );
+            shipCreationNameNotifier.value = value;
+          },
           inputStyle: Theme.of(context).textTheme.titleLarge,
         ),
-
+        widget.alert && shipCreationNameNotifier.value == null
+            ? Text('erforderlich!', style: TextStyle(color: Colors.red))
+            : SizedBox.shrink(),
         //======SIZE CATEGORY=========//
         SizedBox(
           width: 300.0,
           child: ListTile(
             contentPadding: EdgeInsets.all(0.0),
-            style: ListTileStyle.drawer,
             title: Text(
               'Grössenkategorie',
               style: Theme.of(context).textTheme.titleSmall,
@@ -42,19 +44,22 @@ class _ShipCreationTitleState extends State<ShipCreationTitle> {
               padding: EdgeInsets.only(left: 5.0),
               style: Theme.of(context).textTheme.bodyLarge,
               isDense: true,
-              value: widget.sizeNotifier.value ?? ShipSize.medium,
+              value: shipCreationSizeNotifier.value,
               items: [
                 for (var size in ShipSize.values)
                   DropdownMenuItem(value: size, child: Text(size.name)),
               ],
               onChanged: (value) {
                 setState(() {
-                  widget.sizeNotifier.value = value;
+                  shipCreationSizeNotifier.value = value;
                 });
               },
             ),
           ),
         ),
+        widget.alert && shipCreationSizeNotifier.value == null
+            ? Text('erforderlich!', style: TextStyle(color: Colors.red))
+            : SizedBox.shrink(),
       ],
     );
   }

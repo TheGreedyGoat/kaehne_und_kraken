@@ -26,12 +26,12 @@ class _InputFieldState extends State<InputField> {
   TextInputType? get type => widget.type;
   TextEditingController controller = TextEditingController();
 
-  String? input;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: ListTile(
         contentPadding: EdgeInsets.all(0),
+        //===TEXT FIELD===//
         subtitle: TextField(
           style: widget.inputStyle ?? Theme.of(context).textTheme.bodyLarge,
           decoration: InputDecoration(
@@ -40,15 +40,13 @@ class _InputFieldState extends State<InputField> {
               borderSide: BorderSide(width: 5.0),
               borderRadius: BorderRadius.zero,
             ),
-            // focusColor: Colors.white,
           ),
           controller: controller,
           keyboardType: type,
-          onEditingComplete: () {
-            setState(() {
-              input = controller.text;
-            });
+          onChanged: (value) {
             widget.onEditingComplete(controller.text);
+          },
+          onEditingComplete: () {
             FocusScope.of(context).unfocus();
           },
         ),

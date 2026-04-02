@@ -24,12 +24,15 @@ class Ship {
   Ship({
     required this.name,
     required this.size,
-    required this.hullSP,
-    required this.rudderSP,
-    required this.sailSP,
+    required int hullSP,
+    required int rudderSP,
+    required int sailSP,
     int? agilityScore,
     int? crewSize,
   }) {
+    this.hullSP = SPPool(hullSP);
+    this.sailSP = SPPool(sailSP);
+    this.rudderSP = SPPool(rudderSP);
     agility = AbilityScore(agilityScore ?? 10);
     crew = Crew(crewSize: crewSize ?? 0, ship: this);
     hullDice = ExpandableDiePool(faces: 4, maxDice: 4 * ((size.index) + 1));

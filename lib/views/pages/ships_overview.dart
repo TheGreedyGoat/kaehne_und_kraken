@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 
-final List<Ship> savedShips = [
+final List<Ship> savedShips = List.of([
   Ship(
     name: 'Jackdaw',
     size: ShipSize.medium,
-    hullSP: SPPool(100),
-    rudderSP: SPPool(50),
-    sailSP: SPPool(35),
+    hullSP: 100,
+    rudderSP: 50,
+    sailSP: 35,
   ),
   Ship(
     name: "Queen Ann's Revenge",
     size: ShipSize.huge,
-    hullSP: SPPool(350),
-    rudderSP: SPPool(125),
-    sailSP: SPPool(120),
+    hullSP: 350,
+    rudderSP: 125,
+    sailSP: 120,
   ),
-]; // List.empty(growable: true);
+], growable: true);
 
 class ShipsOverview extends StatefulWidget {
   const ShipsOverview({super.key});
@@ -35,7 +35,7 @@ class _ShipsOverviewState extends State<ShipsOverview> {
                 ListTile(
                   title: Text(s.name),
                   subtitle: Text(s.size.name),
-                  trailing: Text('SP: $s.hullSP.totalMax'),
+                  trailing: Text('SP: ${s.hullSP.totalMax}'),
                 ),
             ],
           )
