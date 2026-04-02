@@ -3,15 +3,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 
-List<Map<String, String>> saves = [
-  <String, String>{
-    "name": "Jackdaw",
-    "size": "ShipSize.medium",
-    "hullSP": "100",
-    "rudderSP": "50",
-    "sailSP": "35",
-  },
-];
+const String shipSaveFileName = 'ships';
 
 class JsonLoader {
   static Future<String> get _localPath async {

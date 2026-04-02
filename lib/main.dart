@@ -1,8 +1,10 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/data/colors.dart';
 import 'package:kaehne_und_kraken/data/saves/json_loader.dart';
+import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/widget_tree.dart';
 
 void main() {
@@ -52,10 +54,19 @@ void main() {
       home: WidgetTree(),
     ),
   );
-  testWrite();
+
+  preload();
 }
 
-Future<void> testWrite() async {
-  await JsonLoader.writeFile("Hello world!", "hello_world", 'txt');
-  print(await JsonLoader.readFile("hello_world", 'txt'));
+Future<void> preload() async {
+  String mapListString = await JsonLoader.readFile(shipSaveFileName, 'json');
+  late List<Ship> ships;
+  if (mapListString == 'Error') {
+    ships = List.empty(growable: true);
+    await JsonLoader.writeFile('[]', shipSaveFileName, 'json');
+  } else {
+    var maps = jsonDecode(mapListString);
+    ships = List.of([for (var map in maps) Ship.fromJson(map)], growable: true);
+  }
+  shipStorageNotifier.value = ships;
 }

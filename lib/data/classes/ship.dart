@@ -1,25 +1,26 @@
+import 'dart:convert';
 import 'dart:math';
+
+import 'package:kaehne_und_kraken/data/saves/json_loader.dart';
 
 enum ShipSize { tiny, small, medium, large, huge }
 
 class Ship {
+  //=====BASE VALUES=====//
+
   String name;
   ShipSize size;
-  double get sizeValue {
-    return size.index == 0 ? 0.5 : size.index.toDouble();
-  }
-
-  late AbilityScore agility;
-  int get accelerationBonus => agility.modifier + 5;
-
-  int get turnRadius => 6 - agility.modifier;
-  late Crew crew;
-
   late SPPool hullSP;
   late SPPool sailSP;
   late SPPool rudderSP;
 
   late ExpandableDiePool hullDice;
+
+  //=====IMPLIED VALUES=====//
+
+  double get sizeValue {
+    return size.index == 0 ? 0.5 : size.index.toDouble();
+  }
 
   Ship({
     required this.name,
@@ -27,16 +28,46 @@ class Ship {
     required int hullSP,
     required int rudderSP,
     required int sailSP,
-    int? agilityScore,
     int? crewSize,
   }) {
     this.hullSP = SPPool(hullSP);
     this.sailSP = SPPool(sailSP);
     this.rudderSP = SPPool(rudderSP);
-    agility = AbilityScore(agilityScore ?? 10);
-    crew = Crew(crewSize: crewSize ?? 0, ship: this);
     hullDice = ExpandableDiePool(faces: 4, maxDice: 4 * ((size.index) + 1));
   }
+
+  Ship.jackdaw()
+    : this(
+        name: 'Jackdaw',
+        size: ShipSize.medium,
+        hullSP: 100,
+        sailSP: 30,
+        rudderSP: 30,
+      );
+
+  Ship.fromJson(Map<String, dynamic> json)
+    : name = json['name'] as String,
+      size = ShipSize.values.firstWhere((element) {
+        return element.toString() == '${json['size']}';
+      }),
+      hullSP = SPPool.fromJson(json['hullSP'] as Map<String, dynamic>),
+      sailSP = SPPool.fromJson(json['sailSP'] as Map<String, dynamic>),
+      rudderSP = SPPool.fromJson(json['rudderSP'] as Map<String, dynamic>);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'size': size.toString(),
+      'hullSP': hullSP,
+      'sailSP': sailSP,
+      'rudderSP': rudderSP,
+    };
+  }
+
+  void save() {}
+  @override
+  String toString() =>
+      'Beware the mighty $name, it is ${size.name} in size and has ${hullSP.totalMax} max Structure Points!';
 }
 
 class Crew {
@@ -87,6 +118,26 @@ class SPPool {
   void repairFully() {
     current = totalMax;
     currentMax = totalMax;
+  }
+
+  Map<String, int> toJson() => {
+    'totalMax': totalMax,
+    'currentMax': currentMax,
+    'current': current,
+  };
+
+  SPPool.fromJson(Map<String, dynamic> poolMap) {
+    int? totalMax = poolMap['totalMax'];
+    int? currentMax = poolMap['currentMax'];
+    int? current = poolMap['currentMax'];
+    assert(
+      totalMax != null && currentMax != null && current != null,
+      'Null value in SP-Pool',
+    );
+
+    this.totalMax = totalMax!;
+    this.currentMax = currentMax!;
+    this.current = current!;
   }
 }
 

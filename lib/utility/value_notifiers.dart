@@ -16,3 +16,5 @@ final ValueNotifier<ShipSize?> shipCreationSizeNotifier = ValueNotifier(null);
 final ValueNotifier<int?> shipCreationHullSPNotifier = ValueNotifier(null);
 final ValueNotifier<int?> shipCreationSailSPNotifier = ValueNotifier(null);
 final ValueNotifier<int?> shipCreationRudderSPNotifier = ValueNotifier(null);
+
+final ValueNotifier<List<Ship>> shipStorageNotifier = ValueNotifier([]);

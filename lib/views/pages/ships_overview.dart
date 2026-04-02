@@ -1,23 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/pages/ship_details_Page.dart';
-
-final List<Ship> savedShips = List.of([
-  Ship(
-    name: 'Jackdaw',
-    size: ShipSize.medium,
-    hullSP: 100,
-    rudderSP: 50,
-    sailSP: 35,
-  ),
-  Ship(
-    name: "Queen Ann's Revenge",
-    size: ShipSize.huge,
-    hullSP: 350,
-    rudderSP: 125,
-    sailSP: 120,
-  ),
-], growable: true);
 
 class ShipsOverview extends StatefulWidget {
   const ShipsOverview({super.key});
@@ -29,27 +13,30 @@ class ShipsOverview extends StatefulWidget {
 class _ShipsOverviewState extends State<ShipsOverview> {
   @override
   Widget build(BuildContext context) {
-    return savedShips.length > 0
-        ? ListView(
-            children: [
-              for (var s in savedShips)
-                ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ShipDetailsPage(ship: s);
-                        },
-                      ),
-                    );
-                  },
-                  title: Text(s.name),
-                  subtitle: Text(s.size.name),
-                  trailing: Text('SP: ${s.hullSP.totalMax}'),
-                ),
-            ],
-          )
-        : Text('Noch kein Schiff erstellt');
+    return ValueListenableBuilder(
+      valueListenable: shipStorageNotifier,
+      builder: (context, foundShips, child) {
+        return ListView(
+          children: [
+            for (var ship in foundShips)
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ShipDetailsPage(ship: ship);
+                      },
+                    ),
+                  );
+                },
+                title: Text(ship.name),
+                subtitle: Text(ship.size.name),
+                trailing: Text('SP: ${ship.hullSP.totalMax}'),
+              ),
+          ],
+        );
+      },
+    );
   }
 }

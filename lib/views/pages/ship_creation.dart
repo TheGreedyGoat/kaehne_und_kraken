@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/pages/ships_overview.dart';
 import 'package:kaehne_und_kraken/views/widget_tree.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/app_bar_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/body_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_creation/ship_creation_defenses.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_creation/ship_creation_title.dart';
+import 'package:kaehne_und_kraken/data/saves/json_loader.dart';
 
 class ShipCreation extends StatefulWidget {
   const ShipCreation({super.key});
@@ -55,7 +57,9 @@ class _ShipCreationState extends State<ShipCreation> {
       });
       return;
     } else {
-      savedShips.add(
+      var lCopy = shipStorageNotifier.value.toList();
+
+      lCopy.add(
         Ship(
           name: shipCreationNameNotifier.value!,
           size: shipCreationSizeNotifier.value!,
@@ -64,6 +68,10 @@ class _ShipCreationState extends State<ShipCreation> {
           sailSP: shipCreationSailSPNotifier.value!,
         ),
       );
+      shipStorageNotifier.value = lCopy;
+      var jsonList = [for (var ship in lCopy) ship.toJson()];
+      JsonLoader.writeFile(jsonEncode(jsonList), shipSaveFileName, 'json');
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
