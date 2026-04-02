@@ -1,0 +1,46 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
+
+List<Map<String, String>> saves = [
+  <String, String>{
+    "name": "Jackdaw",
+    "size": "ShipSize.medium",
+    "hullSP": "100",
+    "rudderSP": "50",
+    "sailSP": "35",
+  },
+];
+
+class JsonLoader {
+  static Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  static Future<File> _localFile(String fileName, String extension) async {
+    final path = await _localPath;
+
+    return File('$path/$fileName.$extension');
+  }
+
+  static Future<File> writeFile(
+    String content,
+    String fileName,
+    String extension,
+  ) async {
+    final file = await _localFile(fileName, extension);
+
+    return file.writeAsString(content);
+  }
+
+  static Future<String> readFile(String fileName, String extension) async {
+    try {
+      final file = await _localFile(fileName, extension);
+      return file.readAsString();
+    } catch (e) {
+      return 'ERROR';
+    }
+  }
+}

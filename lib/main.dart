@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/colors.dart';
+import 'package:kaehne_und_kraken/data/saves/json_loader.dart';
 import 'package:kaehne_und_kraken/views/widget_tree.dart';
 
 void main() {
@@ -49,4 +52,10 @@ void main() {
       home: WidgetTree(),
     ),
   );
+  testWrite();
+}
+
+Future<void> testWrite() async {
+  await JsonLoader.writeFile("Hello world!", "hello_world", 'txt');
+  print(await JsonLoader.readFile("hello_world", 'txt'));
 }

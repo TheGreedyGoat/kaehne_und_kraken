@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/views/pages/ship_details_Page.dart';
 
 final List<Ship> savedShips = List.of([
   Ship(
@@ -33,6 +34,16 @@ class _ShipsOverviewState extends State<ShipsOverview> {
             children: [
               for (var s in savedShips)
                 ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ShipDetailsPage(ship: s);
+                        },
+                      ),
+                    );
+                  },
                   title: Text(s.name),
                   subtitle: Text(s.size.name),
                   trailing: Text('SP: ${s.hullSP.totalMax}'),

@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Jackdaw",
+        "size": "ShipSize.medium",
+        "hullSP": "100",
+        "rudderSP": "50",
+        "sailSP": "35"
+    },
+    {
+        "name": "Queen Anne's Revenge",
+        "size": "ShipSize.huge",
+        "hullSP": "100",
+        "rudderSP": "50",
+        "sailSP": "35"
+    }
+]
