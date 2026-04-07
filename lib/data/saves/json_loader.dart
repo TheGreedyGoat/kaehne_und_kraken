@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:path_provider/path_provider.dart';
 
 const String shipSaveFileName = 'ships';
@@ -13,7 +11,6 @@ class JsonLoader {
 
   static Future<File> _localFile(String fileName, String extension) async {
     final path = await _localPath;
-
     return File('$path/$fileName.$extension');
   }
 
@@ -28,11 +25,11 @@ class JsonLoader {
   }
 
   static Future<String> readFile(String fileName, String extension) async {
-    try {
-      final file = await _localFile(fileName, extension);
-      return file.readAsString();
-    } catch (e) {
-      return 'ERROR';
+    final file = await _localFile(fileName, extension);
+    if (!await file.exists()) {
+      await file.create();
+      file.writeAsString('[]');
     }
+    return file.readAsString();
   }
 }

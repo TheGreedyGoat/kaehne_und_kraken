@@ -61,12 +61,16 @@ void main() {
 Future<void> preload() async {
   String mapListString = await JsonLoader.readFile(shipSaveFileName, 'json');
   late List<Ship> ships;
-  if (mapListString == 'Error') {
-    ships = List.empty(growable: true);
-    await JsonLoader.writeFile('[]', shipSaveFileName, 'json');
-  } else {
-    var maps = jsonDecode(mapListString);
-    ships = List.of([for (var map in maps) Ship.fromJson(map)], growable: true);
-  }
-  shipStorageNotifier.value = ships;
+  var maps = jsonDecode(mapListString);
+  ships = List.of([
+    Ship(
+      name: 'Jackdaw',
+      size: ShipSize.medium,
+      hullSP: 100,
+      rudderSP: 30,
+      sailSP: 30,
+    ),
+  ], growable: true);
+  // for (var map in maps) Ship.fromJson(map)
+  ShipStorage.saves = ships;
 }

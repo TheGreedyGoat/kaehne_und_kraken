@@ -57,9 +57,7 @@ class _ShipCreationState extends State<ShipCreation> {
       });
       return;
     } else {
-      var lCopy = shipStorageNotifier.value.toList();
-
-      lCopy.add(
+      ShipStorage.saveShip(
         Ship(
           name: shipCreationNameNotifier.value!,
           size: shipCreationSizeNotifier.value!,
@@ -68,10 +66,6 @@ class _ShipCreationState extends State<ShipCreation> {
           sailSP: shipCreationSailSPNotifier.value!,
         ),
       );
-      shipStorageNotifier.value = lCopy;
-      var jsonList = [for (var ship in lCopy) ship.toJson()];
-      JsonLoader.writeFile(jsonEncode(jsonList), shipSaveFileName, 'json');
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

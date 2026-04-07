@@ -70,6 +70,7 @@ class Ship {
       'Beware the mighty $name, it is ${size.name} in size and has ${hullSP.totalMax} max Structure Points!';
 }
 
+//TODO ========CREW==============//
 class Crew {
   Ship ship;
   int crewSize;

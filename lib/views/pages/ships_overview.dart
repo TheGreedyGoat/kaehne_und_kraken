@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/pages/ship_details_Page.dart';
+import 'package:kaehne_und_kraken/views/widgets/ship_overview/ship_tile.dart';
 
 class ShipsOverview extends StatefulWidget {
   const ShipsOverview({super.key});
@@ -14,26 +13,12 @@ class _ShipsOverviewState extends State<ShipsOverview> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: shipStorageNotifier,
+      valueListenable: ShipStorage.notifier,
       builder: (context, foundShips, child) {
         return ListView(
           children: [
-            for (var ship in foundShips)
-              ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return ShipDetailsPage(ship: ship);
-                      },
-                    ),
-                  );
-                },
-                title: Text(ship.name),
-                subtitle: Text(ship.size.name),
-                trailing: Text('SP: ${ship.hullSP.totalMax}'),
-              ),
+            for (int i = 0; i < ShipStorage.saves.length; i++)
+              ShipTile(index: i),
           ],
         );
       },
