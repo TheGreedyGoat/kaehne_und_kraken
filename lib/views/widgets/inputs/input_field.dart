@@ -7,6 +7,7 @@ class InputField extends StatefulWidget {
   final bool isVertical;
   final TextStyle? inputStyle;
   final TextStyle? labelStyle;
+  final bool centerInput;
   const InputField({
     super.key,
     this.type = TextInputType.text,
@@ -15,6 +16,7 @@ class InputField extends StatefulWidget {
     this.isVertical = false,
     this.inputStyle,
     this.labelStyle,
+    this.centerInput = false,
   });
 
   @override
@@ -32,10 +34,12 @@ class _InputFieldState extends State<InputField> {
       child: ListTile(
         contentPadding: EdgeInsets.all(0),
         //===TEXT FIELD===//
-        subtitle: TextField(
+        subtitle: TextFormField(
           style: widget.inputStyle ?? Theme.of(context).textTheme.bodyLarge,
           decoration: InputDecoration(
-            filled: true,
+            label: Text(label, style: widget.inputStyle),
+
+            // filled: true,
             border: OutlineInputBorder(
               borderSide: BorderSide(width: 5.0),
               borderRadius: BorderRadius.zero,
@@ -49,35 +53,11 @@ class _InputFieldState extends State<InputField> {
           onEditingComplete: () {
             FocusScope.of(context).unfocus();
           },
+          onTapOutside: (value) {
+            FocusScope.of(context).unfocus();
+          },
         ),
-        title: widget.isVertical
-            ? Inputlabel(
-                style:
-                    widget.labelStyle ??
-                    Theme.of(context).textTheme.titleSmall!,
-                label: label,
-              )
-            : null,
-        leading: widget.isVertical
-            ? null
-            : Inputlabel(
-                style:
-                    widget.labelStyle ??
-                    Theme.of(context).textTheme.titleSmall!,
-                label: label,
-              ),
       ),
     );
-  }
-}
-
-class Inputlabel extends StatelessWidget {
-  final TextStyle style;
-  final String label;
-  const Inputlabel({super.key, required this.style, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(label, textAlign: TextAlign.center, style: style);
   }
 }

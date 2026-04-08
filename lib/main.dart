@@ -11,6 +11,7 @@ void main() {
   runApp(
     MaterialApp(
       theme: ThemeData(
+        dialogTheme: DialogThemeData(backgroundColor: noteColor),
         inputDecorationTheme: InputDecorationTheme(
           border: UnderlineInputBorder(),
         ),
@@ -22,7 +23,7 @@ void main() {
           onSecondary: Colors.white,
           error: Colors.red,
           onError: Colors.red,
-          surface: Colors.transparent,
+          surface: noteColor,
           onSurface: Colors.black,
         ),
         textTheme: TextTheme(
@@ -60,17 +61,28 @@ void main() {
 
 Future<void> preload() async {
   String mapListString = await JsonLoader.readFile(shipSaveFileName, 'json');
-  late List<Ship> ships;
   var maps = jsonDecode(mapListString);
-  ships = List.of([
-    Ship(
-      name: 'Jackdaw',
-      size: ShipSize.medium,
-      hullSP: 100,
-      rudderSP: 30,
-      sailSP: 30,
-    ),
-  ], growable: true);
-  // for (var map in maps) Ship.fromJson(map)
+  late List<Ship> ships;
+  ships = List.of([for (var map in maps) Ship.fromJson(map)], growable: true);
+  if (ships.isEmpty) {
+    ships.add(
+      Ship(
+        name: 'Jackdaw',
+        size: ShipSize.medium,
+        hullSP: 100,
+        rudderSP: 30,
+        sailSP: 30,
+      ),
+    );
+    ships.add(
+      Ship(
+        name: "Queen Anne's Revenge",
+        size: ShipSize.huge,
+        hullSP: 300,
+        rudderSP: 100,
+        sailSP: 100,
+      ),
+    );
+  }
   ShipStorage.saves = ships;
 }

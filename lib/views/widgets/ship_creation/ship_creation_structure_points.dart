@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/widgets/input_field.dart';
+import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
 
 class ShipCreationStructurePoints extends StatefulWidget {
   const ShipCreationStructurePoints({super.key});
@@ -28,7 +28,7 @@ class _ShipCreationStructurePointsState
           mainAxisSize: MainAxisSize.max,
           children: [
             SizedBox(
-              width: 50,
+              width: 100,
               child: InputField(
                 label: 'RUMPF',
                 isVertical: true,
@@ -41,7 +41,7 @@ class _ShipCreationStructurePointsState
               ),
             ),
             SizedBox(
-              width: 50,
+              width: 100,
               child: InputField(
                 label: 'SEGEL',
                 type: TextInputType.numberWithOptions(),
@@ -54,7 +54,7 @@ class _ShipCreationStructurePointsState
               ),
             ),
             SizedBox(
-              width: 50,
+              width: 100,
               child: InputField(
                 label: 'RUDER',
                 type: TextInputType.numberWithOptions(),

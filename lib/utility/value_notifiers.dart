@@ -48,10 +48,14 @@ class ShipStorage {
 
   static void update(List<Ship> newList) {
     _notifier.value = newList;
-    JsonLoader.writeFile(
-      jsonEncode([for (var s in saves) s.toJson()]),
-      shipSaveFileName,
-      'json',
-    );
+    try {
+      JsonLoader.writeFile(
+        jsonEncode([for (var s in saves) s.toJson()]),
+        shipSaveFileName,
+        'json',
+      );
+    } on JsonUnsupportedObjectError catch (e) {
+      print(e.cause);
+    }
   }
 }

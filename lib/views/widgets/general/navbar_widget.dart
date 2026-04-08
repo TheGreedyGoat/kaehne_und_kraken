@@ -9,12 +9,6 @@ class NavbarWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          decoration: BoxDecoration(border: Border.all()),
-          child: Image.network(
-            'https://tetra-cube.com/dnd/dndimages/statblockbar.jpg',
-          ),
-        ),
         Stack(
           children: [
             SizedBox(

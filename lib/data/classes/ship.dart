@@ -1,20 +1,34 @@
-import 'dart:convert';
 import 'dart:math';
-
-import 'package:kaehne_und_kraken/data/saves/json_loader.dart';
 
 enum ShipSize { tiny, small, medium, large, huge }
 
+enum HullDice { d4, d6, d8 }
+
 class Ship {
+  static const Map<HullDice, int> faces = {
+    HullDice.d4: 4,
+    HullDice.d6: 6,
+    HullDice.d8: 8,
+  };
+  //=====DEFAULT VALUES=====//
+  static const Map<ShipSize, int> defaultCrewActionCapacities = {
+    ShipSize.tiny: 1,
+    ShipSize.small: 5,
+    ShipSize.medium: 10,
+    ShipSize.large: 20,
+    ShipSize.huge: 30,
+  };
   //=====BASE VALUES=====//
 
-  String name;
-  ShipSize size;
+  late String name;
+  late ShipSize size;
   late SPPool hullSP;
   late SPPool sailSP;
   late SPPool rudderSP;
 
-  late ExpandableDiePool hullDice;
+  late ExpandableDicePool hullDice;
+  late int crewActionsCapacity;
+  late int crewActions;
 
   //=====IMPLIED VALUES=====//
 
@@ -28,14 +42,29 @@ class Ship {
     required int hullSP,
     required int rudderSP,
     required int sailSP,
+    int? crewActionCapacity,
     int? crewSize,
+    bool crewIncluded = false,
+    HullDice hullDiceType = HullDice.d4,
+    int? maxHullDice,
+    int? currentHullDice,
   }) {
     this.hullSP = SPPool(hullSP);
     this.sailSP = SPPool(sailSP);
     this.rudderSP = SPPool(rudderSP);
-    hullDice = ExpandableDiePool(faces: 4, maxDice: 4 * ((size.index) + 1));
-  }
 
+    //====Hull Dice====//
+    hullDice = ExpandableDicePool(
+      faces: faces[hullDiceType]!,
+      maxDice: maxHullDice ?? 4 * ((size.index) + 1),
+      currentDice: currentHullDice ?? maxHullDice,
+    );
+
+    //====Crew====//
+    crewActionsCapacity =
+        crewActionCapacity ?? defaultCrewActionCapacities[size]!;
+    crewActions = crewIncluded ? crewActionsCapacity : 0;
+  }
   Ship.jackdaw()
     : this(
         name: 'Jackdaw',
@@ -45,14 +74,30 @@ class Ship {
         rudderSP: 30,
       );
 
-  Ship.fromJson(Map<String, dynamic> json)
-    : name = json['name'] as String,
-      size = ShipSize.values.firstWhere((element) {
-        return element.toString() == '${json['size']}';
-      }),
-      hullSP = SPPool.fromJson(json['hullSP'] as Map<String, dynamic>),
-      sailSP = SPPool.fromJson(json['sailSP'] as Map<String, dynamic>),
-      rudderSP = SPPool.fromJson(json['rudderSP'] as Map<String, dynamic>);
+  Ship.fromJson(Map<String, dynamic> json) {
+    name = json['name'] as String;
+    size = ShipSize.values.firstWhere((element) {
+      return element.toString() == '${json['size']}';
+    });
+    hullSP = SPPool.fromJson(json['hullSP'] as Map<String, dynamic>);
+    sailSP = SPPool.fromJson(json['sailSP'] as Map<String, dynamic>);
+    rudderSP = SPPool.fromJson(json['rudderSP'] as Map<String, dynamic>);
+    crewActionsCapacity =
+        json['crewActionCapacity'] ?? defaultCrewActionCapacities[size];
+    crewActions = json['crewActions'] ?? crewActionsCapacity;
+    hullDice = json['hullDice'] != null
+        ? ExpandableDicePool.fromJson(
+            (json['hullDice'] as Map<String, dynamic>),
+          )
+        : ExpandableDicePool(faces: 4, maxDice: 10);
+  }
+
+  //=====METHODS=====//
+  bool useCrewActions(int amount) {
+    if (crewActions < amount) return false;
+    crewActions -= amount;
+    return true;
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -61,31 +106,15 @@ class Ship {
       'hullSP': hullSP,
       'sailSP': sailSP,
       'rudderSP': rudderSP,
+      'crewActionCapacity': crewActionsCapacity,
+      'crewActions': crewActions,
+      'hullDice': hullDice,
     };
   }
 
   void save() {}
   @override
-  String toString() =>
-      'Beware the mighty $name, it is ${size.name} in size and has ${hullSP.totalMax} max Structure Points!';
-}
-
-//TODO ========CREW==============//
-class Crew {
-  Ship ship;
-  int crewSize;
-  int get maxCrewActions {
-    return (crewSize.toDouble() / (ship.size == ShipSize.tiny ? 4.0 : 8.0))
-        .floor();
-  }
-
-  late int currentCrewActions;
-
-  AbilityScore morale = AbilityScore(10);
-
-  Crew({required this.ship, required this.crewSize}) {
-    currentCrewActions = maxCrewActions;
-  }
+  String toString() => this.toJson().toString(); //'Beware the mighty $name, it is ${size.name} in size and has ${hullSP.totalMax} max Structure Points!';
 }
 
 class AbilityScore {
@@ -121,6 +150,9 @@ class SPPool {
     currentMax = totalMax;
   }
 
+  @override
+  String toString() => 'Total: $totalMax, current: $current';
+
   Map<String, int> toJson() => {
     'totalMax': totalMax,
     'currentMax': currentMax,
@@ -142,13 +174,26 @@ class SPPool {
   }
 }
 
-class ExpandableDiePool {
+class ExpandableDicePool {
   int faces = 6;
   int maxDice = 5;
-  late int currentDice;
-  ExpandableDiePool({required this.faces, required this.maxDice}) {
-    currentDice = maxDice;
+  int currentDice = 5;
+  ExpandableDicePool({
+    required this.faces,
+    required this.maxDice,
+    int? currentDice,
+  }) {
+    currentDice = currentDice ?? maxDice;
+    assert(
+      currentDice >= 0 && currentDice <= maxDice,
+      'Invalid amount of current Dice!',
+    );
   }
+
+  ExpandableDicePool.fromJson(Map<String, dynamic> json)
+    : faces = json['faces'],
+      maxDice = json['maxDice'],
+      currentDice = json['currentDice'];
 
   int? roll() {
     if (currentDice > 0) {
@@ -157,4 +202,13 @@ class ExpandableDiePool {
     }
     return null;
   }
+
+  Map<String, int> toJson() => {
+    'faces': faces,
+    'maxDice': maxDice,
+    'currentDice': currentDice,
+  };
+
+  @override
+  String toString() => '$currentDice/$maxDice d$faces';
 }

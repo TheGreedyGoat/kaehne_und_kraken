@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/widgets/input_field.dart';
+import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/views/widgets/general/dropdown.dart';
+import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_creation/ship_creation_structure_points.dart';
 import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 class ShipCreationDefenses extends StatefulWidget {
   final bool alert;
-  const ShipCreationDefenses({super.key, this.alert = false});
+  final ValueNotifier<int?> hulldiceAmtNotifier;
+  final ValueNotifier<HullDice?> hulldiceTypeNotifier;
+  const ShipCreationDefenses({
+    super.key,
+    this.alert = false,
+    required this.hulldiceAmtNotifier,
+    required this.hulldiceTypeNotifier,
+  });
 
   @override
   State<ShipCreationDefenses> createState() => _ShipCreationDefensesState();
@@ -15,6 +23,14 @@ class ShipCreationDefenses extends StatefulWidget {
 class _ShipCreationDefensesState extends State<ShipCreationDefenses> {
   int? numHullDice;
   bool? useD6;
+  late ValueNotifier<HullDice?> hullDiceTypeNotifier;
+  late ValueNotifier<int?> hulldiceAmtNotifier;
+  @override
+  void initState() {
+    hulldiceAmtNotifier = widget.hulldiceAmtNotifier;
+    hullDiceTypeNotifier = widget.hulldiceTypeNotifier;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,28 +39,24 @@ class _ShipCreationDefensesState extends State<ShipCreationDefenses> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            //===HÜLLENWÜRFEL===//
+            //===HÜLLENWÜRFEL ANZAHL===//
             SizedBox(
               width: 200.0,
               child: InputField(
                 label: 'Hüllenwürfel',
                 type: TextInputType.numberWithOptions(),
-                onEditingComplete: (value) {},
+                onEditingComplete: (value) {
+                  hulldiceAmtNotifier.value = int.tryParse(value);
+                },
               ),
             ),
-            DropdownButton(
-              style: Theme.of(context).textTheme.bodyLarge,
-              value: useD6,
-              dropdownColor: Colors.white,
+            //====HÜLLENWÜRFEL TYP====//
+            MyDropDown(
               items: [
-                DropdownMenuItem(value: false, child: Text('d4')),
-                DropdownMenuItem(value: true, child: Text('d6')),
+                for (var die in HullDice.values)
+                  DropdownMenuItem(value: die, child: Text(die.name)),
               ],
-              onChanged: (value) {
-                setState(() {
-                  useD6 = value!;
-                });
-              },
+              listener: hullDiceTypeNotifier,
             ),
           ],
         ),

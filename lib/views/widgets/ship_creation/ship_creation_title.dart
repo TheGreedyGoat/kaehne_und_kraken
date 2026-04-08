@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/data/colors.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/widgets/input_field.dart';
+import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
 import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 class ShipCreationTitle extends StatefulWidget {
@@ -21,9 +22,6 @@ class _ShipCreationTitleState extends State<ShipCreationTitle> {
         InputField(
           label: 'Name',
           onEditingComplete: (value) {
-            print(
-              'MNKFGNKLNGLDKFFNKLDFNGERITEOGJERI(%UZT%HTV TZ(%T))DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',
-            );
             shipCreationNameNotifier.value = value;
           },
           inputStyle: Theme.of(context).textTheme.titleLarge,
@@ -40,7 +38,9 @@ class _ShipCreationTitleState extends State<ShipCreationTitle> {
               'Grössenkategorie',
               style: Theme.of(context).textTheme.titleSmall,
             ),
+
             trailing: DropdownButton(
+              underline: Container(height: 2, color: titleColor),
               padding: EdgeInsets.only(left: 5.0),
               style: Theme.of(context).textTheme.bodyLarge,
               isDense: true,

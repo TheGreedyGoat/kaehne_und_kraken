@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/pages/ship_details_Page.dart';
+import 'package:kaehne_und_kraken/views/pages/ship_details_page.dart';
 
 class ShipTile extends StatefulWidget {
   final int index;
@@ -21,7 +21,7 @@ class _ShipTileState extends State<ShipTile> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return ShipDetailsPage(index: widget.index);
+              return ShipDetailsPage(shipIndex: widget.index);
             },
           ),
         );
