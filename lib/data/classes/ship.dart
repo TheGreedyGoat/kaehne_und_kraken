@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
+
 enum ShipSize { tiny, small, medium, large, huge }
 
 enum HullDice { d4, d6, d8 }
@@ -18,6 +20,14 @@ class Ship {
     ShipSize.large: 20,
     ShipSize.huge: 30,
   };
+
+  static const Map<ShipSize, int> defaultAgilityScore = {
+    ShipSize.tiny: 14,
+    ShipSize.small: 12,
+    ShipSize.medium: 10,
+    ShipSize.large: 6,
+    ShipSize.huge: 4,
+  };
   //=====BASE VALUES=====//
 
   late String name;
@@ -30,7 +40,18 @@ class Ship {
   late int crewActionsCapacity;
   late int crewActions;
 
+  AbilityScore? _agilityScore;
+  AbilityScore get agilityScore {
+    _agilityScore ??= AbilityScore(defaultAgilityScore[size]!);
+
+    return _agilityScore!;
+  }
+
   //=====IMPLIED VALUES=====//
+
+  int get agilityMod => agilityScore.modifier;
+  int get accelerationMod => agilityMod + 5;
+  int get hexPerTurn => 6 - agilityMod;
 
   double get sizeValue {
     return size.index == 0 ? 0.5 : size.index.toDouble();
@@ -64,6 +85,9 @@ class Ship {
     crewActionsCapacity =
         crewActionCapacity ?? defaultCrewActionCapacities[size]!;
     crewActions = crewIncluded ? crewActionsCapacity : 0;
+
+    //===AGILITY===//
+    _agilityScore = AbilityScore(defaultAgilityScore[size]!);
   }
   Ship.jackdaw()
     : this(
@@ -124,6 +148,9 @@ class AbilityScore {
   }
 
   AbilityScore(this.score);
+
+  @override
+  String toString() => '${modifier > 0 ? '+' : ''}$modifier($score)';
 }
 
 class SPPool {
@@ -139,9 +166,20 @@ class SPPool {
   void takeDamage(int damage) {
     current -= damage;
     currentMax -= (damage.toDouble() * 0.5).floor();
+
+    print(
+      'took $damage points of damage!, we are now on $current, $currentMax',
+    );
   }
 
-  void repairParially() {
+  void repairAmount(int repair) {
+    current = min(current + repair, currentMax);
+    print(
+      'repaired $repair points of damage!, we are now on $current, $currentMax',
+    );
+  }
+
+  void fieldRepair() {
     current = currentMax;
   }
 
@@ -171,6 +209,31 @@ class SPPool {
     this.totalMax = totalMax!;
     this.currentMax = currentMax!;
     this.current = current!;
+  }
+
+  Widget barWidget(double totalWidth) {
+    return Container(
+      width: totalWidth,
+      height: 10.0,
+
+      decoration: BoxDecoration(color: Colors.black),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            //===CURRENT===//
+            width: totalWidth * (current / totalMax),
+            child: Container(decoration: BoxDecoration(color: Colors.green)),
+          ),
+          SizedBox(
+            //===cMax===//
+            width: totalWidth * ((currentMax - current) / totalMax),
+            child: Container(decoration: BoxDecoration(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
   }
 }
 

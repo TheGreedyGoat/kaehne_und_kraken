@@ -85,7 +85,9 @@ class _NumberInputState extends State<NumberInput> {
               Row(
                 children: [
                   _buildButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context, -parseInput());
+                    },
                     child: Text(
                       'Schaden',
                       style: Theme.of(context).textTheme.bodyLarge,
@@ -93,7 +95,9 @@ class _NumberInputState extends State<NumberInput> {
                     backgroundColor: Colors.red,
                   ),
                   _buildButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context, parseInput());
+                    },
                     child: Text(
                       'Reparieren',
                       style: Theme.of(context).textTheme.bodyLarge,
@@ -140,6 +144,10 @@ class _NumberInputState extends State<NumberInput> {
         _appendNumber(number);
       },
     );
+  }
+
+  int parseInput() {
+    return int.tryParse(_controller.text) ?? 0;
   }
 }
 // ElevatedButton(

@@ -9,10 +9,13 @@ class SeparatorWedge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity, // Nutzt volle verfügbare Breite
-      height: height,
-      child: CustomPaint(painter: _SeparatorWedgePainter(color: color)),
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+      child: SizedBox(
+        width: double.infinity, // Nutzt volle verfügbare Breite
+        height: height,
+        child: CustomPaint(painter: _SeparatorWedgePainter(color: color)),
+      ),
     );
   }
 }

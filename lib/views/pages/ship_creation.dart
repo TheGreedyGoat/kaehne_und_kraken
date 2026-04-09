@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/pages/ships_overview.dart';
 import 'package:kaehne_und_kraken/views/widget_tree.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/app_bar_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/body_widget.dart';
