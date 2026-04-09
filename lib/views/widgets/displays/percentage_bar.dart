@@ -38,25 +38,26 @@ class _PercentageBarState extends State<PercentageBar> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return StatblockTile(
-      children: [
-        GestureDetector(
-          onTap: () {},
-          child: ListTile(
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: LinearProgressIndicator(
-                value: percentage(),
-                minHeight: 10,
-                backgroundColor: Colors.red,
-                color: Colors.green,
-              ),
-            ),
-            subtitle: Text('SP: ${value.floor()}/${max.floor()}'),
+    return GestureDetector(
+      onTap: () {},
+      child: ListTile(
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: LinearProgressIndicator(
+            value: percentage(),
+            minHeight: 10,
+            backgroundColor: Colors.red,
+            color: Colors.green,
           ),
         ),
-      ],
+        subtitle: Text('SP: ${value.floor()}/${max.floor()}'),
+      ),
     );
   }
 

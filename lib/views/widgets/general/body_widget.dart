@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblockBorder.dart';
+import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 class BodyWidget extends StatelessWidget {
   final Widget child;
@@ -6,37 +8,6 @@ class BodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/parchment_bg.png'),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: Padding(padding: EdgeInsets.all(8.0), child: child),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              decoration: BoxDecoration(border: Border.all()),
-              child: Image.network(
-                'https://tetra-cube.com/dnd/dndimages/statblockbar.jpg',
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(border: Border.all()),
-              child: Image.network(
-                'https://tetra-cube.com/dnd/dndimages/statblockbar.jpg',
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
+    return StatBlockBorder(child: child);
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/data/colors.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblockBorder.dart';
 import 'package:kaehne_und_kraken/views/widgets/displays/percentage_bar.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/app_bar_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/body_widget.dart';
@@ -31,16 +33,41 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
     return Scaffold(
       appBar: AppBarWidget(header: ship.name),
       body: BodyWidget(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                NumberInput(),
-                PercentageBar(min: 0.0, max: 100.0, initValue: 50.0),
-              ],
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) => Dialog(
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.zero,
+                    ),
+                    child: StatBlockBorder(
+                      height: 400,
+                      backgroundImagePath:
+                          'assets/images/parchment_bg_dark.png',
+                      child: NumberInput(title: 'Rumpf'),
+                    ),
+                  ),
+                );
+              },
+              child: SizedBox(
+                width: double.infinity,
+                height: 75,
+                child: Container(
+                  decoration: BoxDecoration(color: noteColor),
+                  child: IgnorePointer(
+                    child: PercentageBar(
+                      min: 0.0,
+                      max: ship.hullSP.currentMax.toDouble(),
+                      initValue: ship.hullSP.current.toDouble(),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
