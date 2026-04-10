@@ -26,6 +26,7 @@ class _ShipCreationState extends State<ShipCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
+        context: context,
         header: 'Schiff erstellen',
         leading: IconButton(
           onPressed: () async {

@@ -9,17 +9,23 @@ enum Formats {
   bodySmall,
 }
 
-class FormattedText extends StatelessWidget {
-  final String data;
-  final Formats format;
-  const FormattedText(this.data, this.format, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
+class TextFormatting {
+  static Widget text(String data, Formats format, BuildContext context) {
     return Text(data, style: _styleFrom(format, context));
   }
 
-  TextStyle? _styleFrom(Formats format, BuildContext context) {
+  static Widget textSpan(Map<String, Formats> data, BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          for (var key in data.keys)
+            TextSpan(text: key, style: _styleFrom(data[key]!, context)),
+        ],
+      ),
+    );
+  }
+
+  static TextStyle? _styleFrom(Formats format, BuildContext context) {
     switch (format) {
       case Formats.titleLarge:
         return Theme.of(context).textTheme.titleLarge;
@@ -34,5 +40,9 @@ class FormattedText extends StatelessWidget {
       case Formats.bodySmall:
         return Theme.of(context).textTheme.bodySmall;
     }
+  }
+
+  static String signedNumber(num number) {
+    return '${number >= 0 ? '+' : ''}$number';
   }
 }

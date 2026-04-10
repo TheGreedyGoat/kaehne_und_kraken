@@ -26,7 +26,8 @@ class ShipStorage {
   static ValueNotifier<List<Ship>> get notifier => _notifier;
   static List<Ship> get saves => _notifier.value;
   static set saves(List<Ship> value) {
-    update(value);
+    _notifier.value = value;
+    updateSaveFile();
   }
 
   static void saveShip(Ship ship) {
@@ -36,18 +37,17 @@ class ShipStorage {
     saves = lCopy;
 
     //? Save persistent
-    update(lCopy);
+    saves = lCopy;
   }
 
   static void deleteShipAt(int index) {
     var lCopy = saves.toList(growable: true);
     lCopy.removeAt(index);
 
-    update(lCopy);
+    saves = lCopy;
   }
 
-  static void update(List<Ship> newList) {
-    _notifier.value = newList;
+  static void updateSaveFile() {
     try {
       JsonLoader.writeFile(
         jsonEncode([for (var s in saves) s.toJson()]),

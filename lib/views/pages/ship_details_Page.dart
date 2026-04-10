@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
-import 'package:kaehne_und_kraken/views/widgets/decoration/statblockBorder.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_border.dart';
 import 'package:kaehne_und_kraken/views/widgets/displays/formatted_text.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/app_bar_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/body_widget.dart';
@@ -31,7 +32,12 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(header: ship.name),
+      appBar: AppBarWidget(
+        context: context,
+        header: "${ship.name}\n",
+        subHeader: ship.className,
+        centerTitle: false,
+      ),
       body: BodyWidget(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +45,11 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
           children: [
             StatblockTile(
               children: [
-                FormattedText('Strukturpunkte:', Formats.titleLarge),
+                TextFormatting.text(
+                  'Strukturpunkte:',
+                  Formats.titleLarge,
+                  context,
+                ),
                 SizedBox(height: 5.0),
                 _displaySP(ship.hullSP, 'Rumpf'),
                 SizedBox(height: 5.0),
@@ -52,10 +62,32 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
 
             StatblockTile(
               children: [
-                FormattedText(
-                  'Agilität: ${ship.agilityScore.toString()}',
-                  Formats.bodyMedium,
+                TextFormatting.textSpan(<String, Formats>{
+                  'Agilität: ': Formats.bodyLarge,
+                  TextFormatting.signedNumber(ship.agilityMod):
+                      Formats.bodyMedium,
+                }, context),
+                TextFormatting.textSpan(<String, Formats>{
+                  'Beschleunigungsbous: ': Formats.bodyLarge,
+                  TextFormatting.signedNumber(ship.accelerationMod):
+                      Formats.bodyMedium,
+                }, context),
+                TextFormatting.textSpan(<String, Formats>{
+                  'Wendekreis: ': Formats.bodyLarge,
+                  '${ship.hexPerTurn}': Formats.bodyMedium,
+                }, context),
+              ],
+            ),
+            StatblockTile(
+              children: [
+                Center(
+                  child: TextFormatting.text(
+                    'Crew',
+                    Formats.titleMedium,
+                    context,
+                  ),
                 ),
+                _displaySP(ship.crewActions, 'Crewktionen'),
               ],
             ),
           ],
@@ -64,7 +96,7 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
     );
   }
 
-  Widget _displaySP(SPPool pool, String name) {
+  Widget _displaySP(ValuePool pool, String name) {
     return GestureDetector(
       onTap: () async {
         int? value = await showDialog<int>(
@@ -73,7 +105,7 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
         );
         if (value != null) {
           setState(() {
-            value > 0 ? pool.repairAmount(value) : pool.takeDamage(-value);
+            value > 0 ? pool.restore(value) : pool.reduce(-value);
           });
         }
       },
@@ -85,10 +117,11 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
           children: [
             Row(
               children: [
-                FormattedText('$name:', Formats.titleMedium),
-                FormattedText(
-                  " ${pool.current} / ${pool.currentMax} / ${pool.totalMax}",
+                TextFormatting.text('$name:', Formats.titleMedium, context),
+                TextFormatting.text(
+                  " ${pool.current} / ${pool.limit} / ${pool.capacity}",
                   Formats.titleSmall,
+                  context,
                 ),
               ],
             ),
@@ -99,13 +132,31 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
     );
   }
 
-  Dialog inputDialog(SPPool pool, String name) {
+  Dialog inputDialog(ValuePool pool, String name) {
     return Dialog(
       shape: BeveledRectangleBorder(borderRadius: BorderRadiusGeometry.zero),
       child: StatBlockBorder(
         height: 400,
         backgroundImagePath: 'assets/images/parchment_bg_dark.png',
-        child: NumberInput(title: name),
+        child: NumberInput(
+          title: name,
+          actions: [
+            NumInputAction(
+              label: Icon(CupertinoIcons.burst_fill, color: Colors.black),
+              onPressed: (int value) {
+                Navigator.pop(context, -value);
+              },
+              backgroundColor: Colors.redAccent,
+            ),
+            NumInputAction(
+              label: Icon(CupertinoIcons.hammer_fill, color: Colors.black),
+              onPressed: (int value) {
+                Navigator.pop(context, value);
+              },
+              backgroundColor: Colors.lightGreen,
+            ),
+          ],
+        ),
       ),
     );
   }

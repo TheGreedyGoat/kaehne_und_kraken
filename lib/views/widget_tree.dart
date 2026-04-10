@@ -19,7 +19,10 @@ class WidgetTree extends StatelessWidget {
       valueListenable: selectedPageNotifier,
       builder: (context, selectedPage, child) {
         return Scaffold(
-          appBar: AppBarWidget(header: pageTitles[selectedPage]),
+          appBar: AppBarWidget(
+            context: context,
+            header: pageTitles[selectedPage],
+          ),
           body: BodyWidget(child: pages[selectedPage]),
 
           bottomNavigationBar: NavbarWidget(),

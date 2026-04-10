@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
+import 'package:kaehne_und_kraken/views/widgets/displays/formatted_text.dart';
+import 'package:kaehne_und_kraken/views/widgets/inputs/number_input.dart';
 
 enum ShipSize { tiny, small, medium, large, huge }
 
@@ -28,17 +31,35 @@ class Ship {
     ShipSize.large: 6,
     ShipSize.huge: 4,
   };
+
+  static const Map<ShipSize, String> defaultSipClass = {
+    ShipSize.tiny: "Schaluppe",
+    ShipSize.small: "Schoner",
+    ShipSize.medium: "Brig",
+    ShipSize.large: "Fregatte",
+    ShipSize.huge: "Galeone",
+  };
+
+  //=====NARRATIVE VALUES=====//
+  String? _className;
+  String get className {
+    _className ??= defaultSipClass[size];
+    return _className!;
+  }
+
+  set className(String value) {
+    _className = value;
+  }
   //=====BASE VALUES=====//
 
   late String name;
   late ShipSize size;
-  late SPPool hullSP;
-  late SPPool sailSP;
-  late SPPool rudderSP;
+  late StructurePoints hullSP;
+  late StructurePoints sailSP;
+  late StructurePoints rudderSP;
 
   late ExpandableDicePool hullDice;
-  late int crewActionsCapacity;
-  late int crewActions;
+  late CrewActions crewActions;
 
   AbilityScore? _agilityScore;
   AbilityScore get agilityScore {
@@ -64,15 +85,15 @@ class Ship {
     required int rudderSP,
     required int sailSP,
     int? crewActionCapacity,
-    int? crewSize,
     bool crewIncluded = false,
     HullDice hullDiceType = HullDice.d4,
     int? maxHullDice,
     int? currentHullDice,
+    String? className,
   }) {
-    this.hullSP = SPPool(hullSP);
-    this.sailSP = SPPool(sailSP);
-    this.rudderSP = SPPool(rudderSP);
+    this.hullSP = StructurePoints.create(hullSP);
+    this.sailSP = StructurePoints.create(sailSP);
+    this.rudderSP = StructurePoints.create(rudderSP);
 
     //====Hull Dice====//
     hullDice = ExpandableDicePool(
@@ -82,12 +103,15 @@ class Ship {
     );
 
     //====Crew====//
-    crewActionsCapacity =
-        crewActionCapacity ?? defaultCrewActionCapacities[size]!;
-    crewActions = crewIncluded ? crewActionsCapacity : 0;
+    crewActions = CrewActions.create(
+      crewActionCapacity ?? defaultCrewActionCapacities[size]!,
+    );
 
     //===AGILITY===//
     _agilityScore = AbilityScore(defaultAgilityScore[size]!);
+
+    //===OTHER===//
+    _className = className;
   }
   Ship.jackdaw()
     : this(
@@ -97,30 +121,33 @@ class Ship {
         sailSP: 30,
         rudderSP: 30,
       );
+  Ship.queenAnne()
+    : this(
+        name: "Queen Anne's Revenge",
+        size: ShipSize.huge,
+        hullSP: 300,
+        rudderSP: 100,
+        sailSP: 100,
+      );
 
   Ship.fromJson(Map<String, dynamic> json) {
     name = json['name'] as String;
     size = ShipSize.values.firstWhere((element) {
       return element.toString() == '${json['size']}';
     });
-    hullSP = SPPool.fromJson(json['hullSP'] as Map<String, dynamic>);
-    sailSP = SPPool.fromJson(json['sailSP'] as Map<String, dynamic>);
-    rudderSP = SPPool.fromJson(json['rudderSP'] as Map<String, dynamic>);
-    crewActionsCapacity =
-        json['crewActionCapacity'] ?? defaultCrewActionCapacities[size];
-    crewActions = json['crewActions'] ?? crewActionsCapacity;
+    hullSP = StructurePoints.fromJson(json['hullSP'] as Map<String, dynamic>);
+    sailSP = StructurePoints.fromJson(json['sailSP'] as Map<String, dynamic>);
+    rudderSP = StructurePoints.fromJson(
+      json['rudderSP'] as Map<String, dynamic>,
+    );
+    crewActions = CrewActions.fromJson(
+      json['crewActions'] as Map<String, dynamic>,
+    );
     hullDice = json['hullDice'] != null
         ? ExpandableDicePool.fromJson(
             (json['hullDice'] as Map<String, dynamic>),
           )
         : ExpandableDicePool(faces: 4, maxDice: 10);
-  }
-
-  //=====METHODS=====//
-  bool useCrewActions(int amount) {
-    if (crewActions < amount) return false;
-    crewActions -= amount;
-    return true;
   }
 
   Map<String, dynamic> toJson() {
@@ -130,15 +157,17 @@ class Ship {
       'hullSP': hullSP,
       'sailSP': sailSP,
       'rudderSP': rudderSP,
-      'crewActionCapacity': crewActionsCapacity,
-      'crewActions': crewActions,
+      'crewActions': crewActions.toJson(),
       'hullDice': hullDice,
     };
   }
 
-  void save() {}
+  void save() {
+    ShipStorage.updateSaveFile();
+  }
+
   @override
-  String toString() => this.toJson().toString(); //'Beware the mighty $name, it is ${size.name} in size and has ${hullSP.totalMax} max Structure Points!';
+  String toString() => toJson().toString(); //'Beware the mighty $name, it is ${size.name} in size and has ${hullSP.totalMax} max Structure Points!';
 }
 
 class AbilityScore {
@@ -150,67 +179,39 @@ class AbilityScore {
   AbilityScore(this.score);
 
   @override
-  String toString() => '${modifier > 0 ? '+' : ''}$modifier($score)';
+  String toString() => '${TextFormatting.signedNumber(modifier)}($score)';
 }
 
-class SPPool {
-  int totalMax = 20;
-  int currentMax = 20;
-  int current = 20;
-  SPPool(int maxSP) {
-    totalMax = maxSP;
-    currentMax = maxSP;
-    current = maxSP;
+abstract class ValuePool {
+  late int capacity, limit, current;
+
+  /// Creates a value pool with a given `capcity`
+  ValuePool.create(this.capacity) {
+    limit = capacity;
+    current = capacity;
   }
 
-  void takeDamage(int damage) {
-    current -= damage;
-    currentMax -= (damage.toDouble() * 0.5).floor();
+  ValuePool.fromJson(Map<String, dynamic> json)
+    : capacity = json['capacity'],
+      limit = json['max'] ?? json['capacity'],
+      current = json['current'] ?? json['max'] ?? json['capacity'];
 
-    print(
-      'took $damage points of damage!, we are now on $current, $currentMax',
-    );
+  Map<String, dynamic> toJson() {
+    return {'capacity': capacity, 'max': limit, 'current:': current};
   }
 
-  void repairAmount(int repair) {
-    current = min(current + repair, currentMax);
-    print(
-      'repaired $repair points of damage!, we are now on $current, $currentMax',
-    );
+  void reduce(int amount) {
+    current -= min(amount, current);
   }
 
-  void fieldRepair() {
-    current = currentMax;
-  }
-
-  void repairFully() {
-    current = totalMax;
-    currentMax = totalMax;
+  void restore(int amount) {
+    current = min(current + amount, limit);
   }
 
   @override
-  String toString() => 'Total: $totalMax, current: $current';
-
-  Map<String, int> toJson() => {
-    'totalMax': totalMax,
-    'currentMax': currentMax,
-    'current': current,
-  };
-
-  SPPool.fromJson(Map<String, dynamic> poolMap) {
-    int? totalMax = poolMap['totalMax'];
-    int? currentMax = poolMap['currentMax'];
-    int? current = poolMap['currentMax'];
-    assert(
-      totalMax != null && currentMax != null && current != null,
-      'Null value in SP-Pool',
-    );
-
-    this.totalMax = totalMax!;
-    this.currentMax = currentMax!;
-    this.current = current!;
-  }
-
+  String toString() => '$current / $limit / $capacity';
+  //?=====DISPLAYS=====?//
+  List<NumInputAction> inputActions();
   Widget barWidget(double totalWidth) {
     return Container(
       width: totalWidth,
@@ -223,17 +224,82 @@ class SPPool {
         children: [
           SizedBox(
             //===CURRENT===//
-            width: totalWidth * (current / totalMax),
+            width: totalWidth * (current / capacity),
             child: Container(decoration: BoxDecoration(color: Colors.green)),
           ),
           SizedBox(
             //===cMax===//
-            width: totalWidth * ((currentMax - current) / totalMax),
+            width: totalWidth * ((limit - current) / capacity),
             child: Container(decoration: BoxDecoration(color: Colors.red)),
           ),
         ],
       ),
     );
+  }
+}
+
+class StructurePoints extends ValuePool {
+  StructurePoints.create(super.capacity) : super.create();
+  StructurePoints.fromJson(super.json) : super.fromJson();
+
+  @override
+  void reduce(int amount) {
+    super.reduce(amount);
+    limit -= (amount == 0 ? 0 : amount.toDouble() * 0.5).floor();
+  }
+
+  @override
+  List<NumInputAction> inputActions() {
+    return [
+      NumInputAction(
+        label: Text('Schaden'),
+        backgroundColor: Colors.redAccent,
+        onPressed: (value) {
+          reduce(value);
+        },
+      ),
+      NumInputAction(
+        label: Text('Reparieren'),
+        backgroundColor: Colors.lightGreen,
+        onPressed: (value) {},
+      ),
+    ];
+  }
+}
+
+class CrewActions extends ValuePool {
+  CrewActions.create(super.capacity) : super.create();
+  CrewActions.fromJson(super.json) : super.fromJson();
+
+  @override
+  void reduce(int amount) {
+    amount <= current ? super.reduce(amount) : {};
+  }
+
+  void regain() {
+    current = limit;
+  }
+
+  @override
+  List<NumInputAction> inputActions() {
+    return [
+      NumInputAction(
+        label: Text('Schaden'),
+        backgroundColor: Colors.red,
+        onPressed: (value) {},
+      ),
+      NumInputAction(
+        label: Text('Benutzen'),
+        backgroundColor: Colors.yellow,
+        onPressed: (value) {},
+      ),
+
+      NumInputAction(
+        label: Text('auffüllen'),
+        backgroundColor: Colors.lightGreen,
+        onPressed: (value) {},
+      ),
+    ];
   }
 }
 

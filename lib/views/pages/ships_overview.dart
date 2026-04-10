@@ -13,7 +13,7 @@ class ShipsOverview extends StatefulWidget {
 
 class _ShipsOverviewState extends State<ShipsOverview> {
   List<Widget> _listChildren() {
-    return ShipStorage.saves.length > 0
+    return ShipStorage.saves.isNotEmpty
         ? [
             for (int i = 0; i < ShipStorage.saves.length; i++)
               Column(

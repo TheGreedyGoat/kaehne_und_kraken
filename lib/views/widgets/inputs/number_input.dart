@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/colors.dart';
-import 'package:kaehne_und_kraken/utility/md_parsers.dart';
 import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 class NumberInput extends StatefulWidget {
   final String? title;
-  const NumberInput({super.key, this.title});
+  final List<NumInputAction> actions;
+  const NumberInput({super.key, this.title, required this.actions});
 
   @override
   State<NumberInput> createState() => _NumberInputState();
@@ -13,6 +13,7 @@ class NumberInput extends StatefulWidget {
 
 class _NumberInputState extends State<NumberInput> {
   final TextEditingController _controller = TextEditingController();
+  List<NumInputAction> get actions => widget.actions;
   @override
   void dispose() {
     _controller.dispose();
@@ -83,27 +84,9 @@ class _NumberInputState extends State<NumberInput> {
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildButton(
-                    onPressed: () {
-                      Navigator.pop(context, -parseInput());
-                    },
-                    child: Text(
-                      'Schaden',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    backgroundColor: Colors.red,
-                  ),
-                  _buildButton(
-                    onPressed: () {
-                      Navigator.pop(context, parseInput());
-                    },
-                    child: Text(
-                      'Reparieren',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
+                  for (var action in actions) _buildActionButton(action),
                 ],
               ),
             ],
@@ -114,7 +97,7 @@ class _NumberInputState extends State<NumberInput> {
   }
 
   Widget _buildButton({
-    required Function() onPressed,
+    required void Function() onPressed,
     required Widget child,
     Color? backgroundColor,
   }) {
@@ -130,6 +113,26 @@ class _NumberInputState extends State<NumberInput> {
         ),
         onPressed: onPressed,
         child: child,
+      ),
+    );
+  }
+
+  Widget _buildActionButton(NumInputAction action) {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor:
+              action.backgroundColor ??
+              const Color.fromARGB(255, 235, 195, 142),
+          shape: BeveledRectangleBorder(
+            side: BorderSide(color: titleColor, width: 1.0),
+          ),
+        ),
+        onPressed: () {
+          action.onPressed?.call(parseInput());
+        },
+        child: action.label,
       ),
     );
   }
@@ -150,6 +153,19 @@ class _NumberInputState extends State<NumberInput> {
     return int.tryParse(_controller.text) ?? 0;
   }
 }
+
+class NumInputAction {
+  late Function(int) onPressed;
+
+  late Widget label;
+  late Color? backgroundColor;
+  NumInputAction({
+    this.backgroundColor,
+    required this.label,
+    required this.onPressed,
+  });
+}
+
 // ElevatedButton(
 //         style: buttonstyle,
 //         onPressed: () {

@@ -49,6 +49,5 @@ class StatBlockBorder extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

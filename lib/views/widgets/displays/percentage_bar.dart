@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 class PercentageBar extends StatefulWidget {
   final double min;
@@ -27,9 +26,6 @@ class _PercentageBarState extends State<PercentageBar> {
   @override
   void initState() {
     value = widget.initValue;
-    print(
-      ('min: $min, max: $max, value: $value, ${totalWidth * percentage()}'),
-    );
     assert(
       _validate(),
       'Invalid values on percentage bar! (min: $min, max: $max, value: $value)',

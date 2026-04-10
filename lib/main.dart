@@ -61,28 +61,17 @@ void main() {
 
 Future<void> preload() async {
   String mapListString = await JsonLoader.readFile(shipSaveFileName, 'json');
-  var maps = jsonDecode(mapListString);
-  late List<Ship> ships;
-  ships = List.of([for (var map in maps) Ship.fromJson(map)], growable: true);
+  late List<Ship> ships = [];
+
+  try {
+    var maps = jsonDecode(mapListString);
+    ships = List.of([for (var map in maps) Ship.fromJson(map)], growable: true);
+  } on Exception catch (e) {
+    e.toString();
+  }
   if (ships.isEmpty) {
-    ships.add(
-      Ship(
-        name: 'Jackdaw',
-        size: ShipSize.medium,
-        hullSP: 100,
-        rudderSP: 30,
-        sailSP: 30,
-      ),
-    );
-    ships.add(
-      Ship(
-        name: "Queen Anne's Revenge",
-        size: ShipSize.huge,
-        hullSP: 300,
-        rudderSP: 100,
-        sailSP: 100,
-      ),
-    );
+    ships.add(Ship.jackdaw());
+    ships.add(Ship.queenAnne());
   }
   ShipStorage.saves = ships;
 }

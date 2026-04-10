@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_md/flutter_md.dart';
 
-void parseTable(MD$Table md) {
-  print(md.header.cells[0][0].text);
-}
-
 const Color tableColor = Color.fromARGB(255, 207, 216, 147);
 
 class MyMDTable {
