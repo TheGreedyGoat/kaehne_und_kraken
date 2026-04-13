@@ -99,13 +99,13 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
   Widget _displaySP(ValuePool pool, String name) {
     return GestureDetector(
       onTap: () async {
-        int? value = await showDialog<int>(
+        NumInputAction? value = await showDialog<NumInputAction>(
           context: context,
           builder: (context) => inputDialog(pool, name),
         );
         if (value != null) {
           setState(() {
-            value > 0 ? pool.restore(value) : pool.reduce(-value);
+            value.call();
           });
         }
       },
@@ -138,25 +138,7 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
       child: StatBlockBorder(
         height: 400,
         backgroundImagePath: 'assets/images/parchment_bg_dark.png',
-        child: NumberInput(
-          title: name,
-          actions: [
-            NumInputAction(
-              label: Icon(CupertinoIcons.burst_fill, color: Colors.black),
-              onPressed: (int value) {
-                Navigator.pop(context, -value);
-              },
-              backgroundColor: Colors.redAccent,
-            ),
-            NumInputAction(
-              label: Icon(CupertinoIcons.hammer_fill, color: Colors.black),
-              onPressed: (int value) {
-                Navigator.pop(context, value);
-              },
-              backgroundColor: Colors.lightGreen,
-            ),
-          ],
-        ),
+        child: NumberInput(title: name, actions: pool.inputActions(context)),
       ),
     );
   }

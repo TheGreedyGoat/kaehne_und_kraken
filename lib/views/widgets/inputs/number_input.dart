@@ -83,8 +83,11 @@ class _NumberInputState extends State<NumberInput> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              GridView.count(
+                childAspectRatio: 2,
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 children: [
                   for (var action in actions) _buildActionButton(action),
                 ],
@@ -130,7 +133,8 @@ class _NumberInputState extends State<NumberInput> {
           ),
         ),
         onPressed: () {
-          action.onPressed?.call(parseInput());
+          action.param = parseInput();
+          Navigator.pop(context, action);
         },
         child: action.label,
       ),
@@ -159,11 +163,19 @@ class NumInputAction {
 
   late Widget label;
   late Color? backgroundColor;
+  late int? param;
   NumInputAction({
     this.backgroundColor,
     required this.label,
     required this.onPressed,
   });
+
+  void call() {
+    if (param != null)
+      onPressed(param!);
+    else
+      print('No Parameter given');
+  }
 }
 
 // ElevatedButton(

@@ -181,7 +181,12 @@ class AbilityScore {
   @override
   String toString() => '${TextFormatting.signedNumber(modifier)}($score)';
 }
+//======CLASS. VALUE POOL======//
 
+/// Base class for a 3-Value Pool with
+/// [current] value
+/// the atm value [limit]
+/// and the overall [capacity]
 abstract class ValuePool {
   late int capacity, limit, current;
 
@@ -211,7 +216,7 @@ abstract class ValuePool {
   @override
   String toString() => '$current / $limit / $capacity';
   //?=====DISPLAYS=====?//
-  List<NumInputAction> inputActions();
+  List<NumInputAction> inputActions(BuildContext context);
   Widget barWidget(double totalWidth) {
     return Container(
       width: totalWidth,
@@ -238,6 +243,7 @@ abstract class ValuePool {
   }
 }
 
+//======CLASS: STRUCTURE POINTS======//
 class StructurePoints extends ValuePool {
   StructurePoints.create(super.capacity) : super.create();
   StructurePoints.fromJson(super.json) : super.fromJson();
@@ -249,19 +255,22 @@ class StructurePoints extends ValuePool {
   }
 
   @override
-  List<NumInputAction> inputActions() {
+  List<NumInputAction> inputActions(BuildContext context) {
     return [
       NumInputAction(
         label: Text('Schaden'),
         backgroundColor: Colors.redAccent,
         onPressed: (value) {
+          print('reducing by $value');
           reduce(value);
         },
       ),
       NumInputAction(
         label: Text('Reparieren'),
         backgroundColor: Colors.lightGreen,
-        onPressed: (value) {},
+        onPressed: (value) {
+          restore(value);
+        },
       ),
     ];
   }
@@ -276,28 +285,31 @@ class CrewActions extends ValuePool {
     amount <= current ? super.reduce(amount) : {};
   }
 
+  void losses(int amount) {
+    limit -= min(amount, limit);
+    current = min(current, limit);
+  }
+
   void regain() {
     current = limit;
   }
 
   @override
-  List<NumInputAction> inputActions() {
+  List<NumInputAction> inputActions(BuildContext context) {
     return [
       NumInputAction(
-        label: Text('Schaden'),
+        label: TextFormatting.text('VERL', Formats.bodyMedium, context),
         backgroundColor: Colors.red,
-        onPressed: (value) {},
+        onPressed: (amount) {
+          losses(amount);
+        },
       ),
       NumInputAction(
-        label: Text('Benutzen'),
+        label: TextFormatting.text('VERW', Formats.bodyMedium, context),
         backgroundColor: Colors.yellow,
-        onPressed: (value) {},
-      ),
-
-      NumInputAction(
-        label: Text('auffüllen'),
-        backgroundColor: Colors.lightGreen,
-        onPressed: (value) {},
+        onPressed: (amount) {
+          reduce(amount);
+        },
       ),
     ];
   }
