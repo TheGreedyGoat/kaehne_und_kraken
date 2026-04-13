@@ -3,6 +3,8 @@ import 'package:flutter_md/flutter_md.dart';
 import 'package:kaehne_und_kraken/utility/file_loader.dart';
 import 'package:kaehne_und_kraken/utility/md_parsers.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
+import 'package:kaehne_und_kraken/views/widgets/displays/formatted_text.dart';
+import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 String rulesPath = 'assets/markdown/rules.md';
 
@@ -14,7 +16,7 @@ class RulesPage extends StatefulWidget {
 }
 
 class _RulesPageState extends State<RulesPage> {
-  Markdown? _rulesMD;
+  Map<String, Map<String, String>> rules = {};
   @override
   void initState() {
     super.initState();
@@ -22,17 +24,41 @@ class _RulesPageState extends State<RulesPage> {
   }
 
   void onRulesLoaded(String data) {
-    setState(() {
-      _rulesMD = Markdown.fromString(data);
-      if (_rulesMD != null) {
-        for (var block in _rulesMD!.blocks) {
-          if (block is MD$Table) {
-            table = MyMDTable(block).toTableWidget();
-            return;
-          }
+    var blocks = Markdown.fromString(data).blocks;
+    int i = 0;
+    assert(
+      isHeading(blocks[0], 2),
+      'Rules File must start with an h2 ${blocks[i].text}',
+    );
+    while (i < blocks.length) {
+      //=====SECTION TITLE=====//
+      String sectionTitle = blocks[i].text;
+      Map<String, String> currentSection = <String, String>{};
+      int j = i + 1;
+      while (j < blocks.length && !isHeading(blocks[j], 2)) {
+        assert(
+          isHeading(blocks[j], 3),
+          'Rules section must begin with an h3: ${blocks[j].text}',
+        );
+        String ruleTitle = blocks[j].text;
+        String ruleContent = '';
+        int k = j + 1;
+        while (k < blocks.length &&
+            !isHeading(blocks[k], 2) &&
+            !isHeading(blocks[k], 3)) {
+          ruleContent += '${blocks[k].text}\n';
+          k++;
         }
+        currentSection[ruleTitle] = ruleContent;
+        j = k;
       }
-    });
+      rules[sectionTitle] = currentSection;
+      i = j;
+    }
+  }
+
+  bool isHeading(MD$Block block, int level) {
+    return (block is MD$Heading) && block.level == level;
   }
 
   Table? table;
@@ -40,10 +66,27 @@ class _RulesPageState extends State<RulesPage> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: MarkdownWidget(
-        markdown: _rulesMD ?? Markdown.fromString('# Nüscht'),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          for (var sectionTitle in rules.keys)
+            StatblockTile(
+              children: [
+                TextFormatting.text(sectionTitle, Formats.titleLarge, context),
+                for (String ruleTitle in rules[sectionTitle]!.keys)
+                  TextFormatting.textSpan({
+                    '$ruleTitle\n': Formats.titleMedium,
+                    rules[sectionTitle]![ruleTitle]!: Formats.bodyMedium,
+                  }, context),
+              ],
+            ),
+        ],
       ),
     );
+  }
+
+  MarkdownWidget get(String str) {
+    return MarkdownWidget(markdown: Markdown.fromString(str));
   }
 }
 

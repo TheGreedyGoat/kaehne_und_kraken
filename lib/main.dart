@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/data/app_data.dart';
 import 'package:kaehne_und_kraken/data/colors.dart';
-import 'package:kaehne_und_kraken/data/saves/json_loader.dart';
-import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/widget_tree.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppData.load();
   runApp(
     MaterialApp(
       theme: ThemeData(
@@ -55,23 +53,4 @@ void main() {
       home: WidgetTree(),
     ),
   );
-
-  preload();
-}
-
-Future<void> preload() async {
-  String mapListString = await JsonLoader.readFile(shipSaveFileName, 'json');
-  late List<Ship> ships = [];
-
-  try {
-    var maps = jsonDecode(mapListString);
-    ships = List.of([for (var map in maps) Ship.fromJson(map)], growable: true);
-  } on Exception catch (e) {
-    e.toString();
-  }
-  if (ships.isEmpty) {
-    ships.add(Ship.jackdaw());
-    ships.add(Ship.queenAnne());
-  }
-  ShipStorage.saves = ships;
 }

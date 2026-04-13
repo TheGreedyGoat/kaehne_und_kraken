@@ -61,11 +61,16 @@ class Ship {
   late ExpandableDicePool hullDice;
   late CrewActions crewActions;
 
-  AbilityScore? _agilityScore;
+  late AbilityScore? _agilityScore;
   AbilityScore get agilityScore {
     _agilityScore ??= AbilityScore(defaultAgilityScore[size]!);
-
     return _agilityScore!;
+  }
+
+  late AbilityScore? _crewMorale;
+  AbilityScore get crewMorale {
+    _crewMorale ??= AbilityScore(10);
+    return _crewMorale!;
   }
 
   //=====IMPLIED VALUES=====//
@@ -78,18 +83,14 @@ class Ship {
     return size.index == 0 ? 0.5 : size.index.toDouble();
   }
 
-  Ship({
+  Ship.createNew({
     required this.name,
     required this.size,
     required int hullSP,
-    required int rudderSP,
     required int sailSP,
-    int? crewActionCapacity,
-    bool crewIncluded = false,
-    HullDice hullDiceType = HullDice.d4,
-    int? maxHullDice,
-    int? currentHullDice,
-    String? className,
+    required int rudderSP,
+    required HullDice hullDiceType,
+    required int hullDiceAmt,
   }) {
     this.hullSP = StructurePoints.create(hullSP);
     this.sailSP = StructurePoints.create(sailSP);
@@ -98,68 +99,67 @@ class Ship {
     //====Hull Dice====//
     hullDice = ExpandableDicePool(
       faces: faces[hullDiceType]!,
-      maxDice: maxHullDice ?? 4 * ((size.index) + 1),
-      currentDice: currentHullDice ?? maxHullDice,
+      maxDice: hullDiceAmt,
     );
 
     //====Crew====//
-    crewActions = CrewActions.create(
-      crewActionCapacity ?? defaultCrewActionCapacities[size]!,
-    );
+    crewActions = CrewActions.create(defaultCrewActionCapacities[size]!);
 
     //===AGILITY===//
     _agilityScore = AbilityScore(defaultAgilityScore[size]!);
 
     //===OTHER===//
-    _className = className;
+    _crewMorale = AbilityScore(10);
   }
+
   Ship.jackdaw()
-    : this(
+    : this.createNew(
         name: 'Jackdaw',
         size: ShipSize.medium,
         hullSP: 100,
         sailSP: 30,
         rudderSP: 30,
+        hullDiceType: HullDice.d4,
+        hullDiceAmt: 10,
       );
   Ship.queenAnne()
-    : this(
-        name: "Queen Anne's Revenge",
+    : this.createNew(
+        name: 'Queen annes Revenge',
         size: ShipSize.huge,
-        hullSP: 300,
-        rudderSP: 100,
+        hullSP: 350,
         sailSP: 100,
+        rudderSP: 100,
+        hullDiceType: HullDice.d8,
+        hullDiceAmt: 15,
       );
 
-  Ship.fromJson(Map<String, dynamic> json) {
-    name = json['name'] as String;
-    size = ShipSize.values.firstWhere((element) {
-      return element.toString() == '${json['size']}';
-    });
-    hullSP = StructurePoints.fromJson(json['hullSP'] as Map<String, dynamic>);
-    sailSP = StructurePoints.fromJson(json['sailSP'] as Map<String, dynamic>);
-    rudderSP = StructurePoints.fromJson(
-      json['rudderSP'] as Map<String, dynamic>,
-    );
-    crewActions = CrewActions.fromJson(
-      json['crewActions'] as Map<String, dynamic>,
-    );
-    hullDice = json['hullDice'] != null
-        ? ExpandableDicePool.fromJson(
-            (json['hullDice'] as Map<String, dynamic>),
-          )
-        : ExpandableDicePool(faces: 4, maxDice: 10);
-  }
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'size': size.toString(),
+    'hullSP': hullSP.toJson(),
+    'sailSP': sailSP.toJson(),
+    'rudderSP': rudderSP.toJson(),
+    'hullDice': hullDice.toJson(),
+    'crewActions': crewActions.toJson(),
+    'agilityScore': agilityScore.score,
+    'crewMorale': crewMorale.score,
+  };
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'size': size.toString(),
-      'hullSP': hullSP,
-      'sailSP': sailSP,
-      'rudderSP': rudderSP,
-      'crewActions': crewActions.toJson(),
-      'hullDice': hullDice,
-    };
+  Ship.fromJson(Map<String, dynamic> json)
+    : name = json['name'],
+      size = ShipSize.values.firstWhere((e) => e.toString() == json['size']),
+      hullSP = StructurePoints.fromJson(json['hullSP']),
+      sailSP = StructurePoints.fromJson(json['sailSP']),
+      rudderSP = StructurePoints.fromJson(json['rudderSP']),
+      hullDice = ExpandableDicePool.fromJson(json['hullDice']),
+      crewActions = CrewActions.fromJson(json['crewActions']),
+      _agilityScore = AbilityScore(json['agilityScore']),
+      _crewMorale = AbilityScore(json['crewMorale']);
+
+  void increaseDecreaseMorale(int amount) {
+    crewMorale.score += amount;
+
+    crewMorale.score.clamp(0, 20);
   }
 
   void save() {
@@ -170,8 +170,25 @@ class Ship {
   String toString() => toJson().toString(); //'Beware the mighty $name, it is ${size.name} in size and has ${hullSP.totalMax} max Structure Points!';
 }
 
+//?                /|___
+//?              ///|   ))
+//?            /////|   )))
+//?          ///////|    )))
+//?        /////////|     )))
+//?      ///////////|     ))))
+//?    /////////////|     )))
+//?   //////////////|    )))
+//? ////////////////|___)))
+//?   ______________|________
+//?   \                    /
+//? ~~~~~~~~~~~~~~~~~~~~~~~~~~
+//=====Class: Ability Score=====//
+
+enum RollTypes { normal, advantage, disadvantage }
+
 class AbilityScore {
   int score;
+  Random die = Random();
   int get modifier {
     return ((score - 10).toDouble() * 0.5).floor();
   }
@@ -181,6 +198,7 @@ class AbilityScore {
   @override
   String toString() => '${TextFormatting.signedNumber(modifier)}($score)';
 }
+
 //======CLASS. VALUE POOL======//
 
 /// Base class for a 3-Value Pool with
@@ -189,6 +207,7 @@ class AbilityScore {
 /// and the overall [capacity]
 abstract class ValuePool {
   late int capacity, limit, current;
+  List<PopupMenuItem<Function>> get popup;
 
   /// Creates a value pool with a given `capcity`
   ValuePool.create(this.capacity) {
@@ -211,6 +230,11 @@ abstract class ValuePool {
 
   void restore(int amount) {
     current = min(current + amount, limit);
+  }
+
+  void fullRestore() {
+    limit = capacity;
+    current = capacity;
   }
 
   @override
@@ -249,6 +273,11 @@ class StructurePoints extends ValuePool {
   StructurePoints.fromJson(super.json) : super.fromJson();
 
   @override
+  List<PopupMenuItem<Function>> get popup => <PopupMenuItem<Function>>[
+    PopupMenuItem(value: fullRestore, child: Text('volle Reparatur')),
+  ];
+
+  @override
   void reduce(int amount) {
     super.reduce(amount);
     limit -= (amount == 0 ? 0 : amount.toDouble() * 0.5).floor();
@@ -261,7 +290,6 @@ class StructurePoints extends ValuePool {
         label: Text('Schaden'),
         backgroundColor: Colors.redAccent,
         onPressed: (value) {
-          print('reducing by $value');
           reduce(value);
         },
       ),
@@ -279,6 +307,12 @@ class StructurePoints extends ValuePool {
 class CrewActions extends ValuePool {
   CrewActions.create(super.capacity) : super.create();
   CrewActions.fromJson(super.json) : super.fromJson();
+
+  @override
+  List<PopupMenuItem<Function>> get popup => <PopupMenuItem<Function>>[
+    PopupMenuItem(value: regain, child: Text('CA zurücksetzen')),
+    PopupMenuItem(value: fullRestore, child: Text('Crew auffüllen')),
+  ];
 
   @override
   void reduce(int amount) {

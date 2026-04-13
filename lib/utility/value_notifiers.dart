@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
-import 'package:kaehne_und_kraken/data/saves/json_loader.dart';
+import 'package:kaehne_und_kraken/utility/file_loader.dart';
 
 final ValueNotifier<List<Widget>> rulesWidgetsNotifier = ValueNotifier(
   List.empty(),
@@ -49,7 +49,7 @@ class ShipStorage {
 
   static void updateSaveFile() {
     try {
-      JsonLoader.writeFile(
+      FileLoader.writeFile(
         jsonEncode([for (var s in saves) s.toJson()]),
         shipSaveFileName,
         'json',

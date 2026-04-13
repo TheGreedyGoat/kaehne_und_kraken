@@ -1,28 +1,24 @@
 ## Allgemeines
-
 ### Das Schlachtfeld
 
 Eine Wabe während eines Schiffskampfes repräsentiert einen Bereich von 9m (das entspricht 30 ft. oder 6 Standardfeldern) Jedes Feld kann grundsätzlich nur von einem Schiff/ einer Kreatur belegt werden.
 Mit “einer Drehung” ist im Allgemeinen eine Rotation um 60° gemeint, also “ein Feld weiter”.
 
-$$$
 ### Züge
 
 Schiffskämpfe sind im Allgemeinen etwas langsamer und träger als Kämpfe unter einzelnen Kreaturen, deshalb repräsentiert eine Schiffsrunde einen Zeitraum von ca 30s, entspricht also 5 Standartzügen.
 Charaktere (also SCs und NSCs), die bei einer Seeschlacht an Bord sind, haben also während einer Runde die Möglichkeit, bis zu 5 Züge zu verwenden. Charakteraktionen können jederzeit verwendet werden.
 Die Züge großer Einzelkreaturen, zB Seeungeheuern, werden (ähnlich wie legendäre Aktionen) über die Runde verteilt.
 
-$$$
 ### Strukturpunkte
 
 Da bei Schiffskämpfen deutlich höhere Schadensmengen verteilt werden als im gewöhnlichen Kampf,  werden statt den üblichen Hit Points/ Trefferpunkten (HP) Strukturpunkte (SP) verwendet. 1 SP entspricht dabei 20 HP.
 Der Schaden von Angriffen, die in HP angegeben werden, werden dementsprechend durch 20 geteilt, der Rest wird allerdings verworfen. Eine Kreatur, die über einen Mehrfachangriff verfügt, darf auch den Schaden aller Angriffe, die sie gegen dasselbe Ziel durchführt, erst zusammen zählen, bevor der Schaden geteilt wird, um den Schaden möglichst effektiv auszuschöpfen.
 
-$$$
 ### Grössenklasse (GK)
 
 Die GK gibt an, wie viele Hex (der Länge nach) ein Schiff einnimmt und wie leicht es mit Angriffen zu treffen ist.
-$$$
+
 | GK     | Länge | Schiffstyp |
 | ------ | ----- | ---------- |
 | winzig | 1/2   | Schaluppe  |
@@ -31,7 +27,6 @@ $$$
 | groß   | 3     | Fregatte   |
 | riesig | 4     | Galeone    |
 
-$$$
 ### Agilität (AG)
 
 Die Agilität bestimmt allgemein, wie flink ein Schiff ist. 
@@ -46,7 +41,6 @@ Die Moral legt das allgemeine Wohlbefinden der Crew sowie ihre Haltung zum Capta
 Die Moralfunktioniert genauso wie ein klassischer Attributwert:
 
 
-$$$
 ### Salven
 
 Die meisten Bewaffnungen, wie Breitseitenkanonen, werden in Salven abgefeuert. Eine Salve repräsentiert 4 Kanonen. Für einen Angriff können mehrere Salven gleichzeitig abgefeuert werden, aber es werden immer ganze Salven abgefeuert
@@ -55,7 +49,6 @@ Jedes Schiff wirft für seine Initiative einen Crewwurf (1d20 + Moralbonus) plus
 
 Über die gesamte Zugfolge werden zusätzlich 5 Runden für Kreaturen ( zB SCs oder Seeungeheuer) verteilt. Für diese wird eine eigene Initiative ausgewürfelt.
 
-$$$
 ### Ablauf eines Zuges
 
 Geschwindigkeit bestimmen (siehe Wind und Bewegung)
@@ -67,7 +60,6 @@ Reparatur- Lösch- oä. Versuche unternehmen
 Angriffe 
 Schnelles Laden (1CA: Crewwurf SG 15. Erfolg: Salve kann fertig geladen werden)
 
-$$$
 ### Wind und Bewegung
 
 Geschwindigkeit bestimmen 
@@ -86,20 +78,16 @@ Die Beschleunigung wird zu der aktuellen Geschwindigkeit addiert, bzw davon abge
 
 Zur Übersicht wird die Geschwindigkeit der Schiffe mithilfe von Tokens auf einer für alle sichtbaren Tafel dargestellt.
 
-$$$
 ### Lenken
 Vor jeder Drehung mus
 s ein Schiff seinen Trägheits-Modifikator* in Feldern zurück legen, halb so viele bei halbem oder keinem Segel.
 
-$$$
 ### Bewegung
 
 Das Schiff muss sich am Ende seines Zuges um die gesamte aktuelle Geschwindigkeit bewegt haben. Mit gesetzten Segeln gelten doppelte Bewegungskosten bei vollem Gegenwind, halbe bei vollem Rückenwind.
 
-$$$
 ### Befehle
 
-$$$
 #### Angriff mit Kanonen
 
 Sofern nicht anders angegeben, kann ein Angriff mit Schiffsbewaffnung jederzeit durchgeführt werden und kostet auch keine CA (Diese werden durch die Nachlademechaniken geregelt)

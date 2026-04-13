@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
@@ -64,8 +63,7 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
               children: [
                 TextFormatting.textSpan(<String, Formats>{
                   'Agilität: ': Formats.bodyLarge,
-                  TextFormatting.signedNumber(ship.agilityMod):
-                      Formats.bodyMedium,
+                  ship.agilityScore.toString(): Formats.bodyMedium,
                 }, context),
                 TextFormatting.textSpan(<String, Formats>{
                   'Beschleunigungsbous: ': Formats.bodyLarge,
@@ -87,7 +85,11 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
                     context,
                   ),
                 ),
-                _displaySP(ship.crewActions, 'Crewktionen'),
+                _displaySP(ship.crewActions, 'Crewaktionen'),
+                TextFormatting.textSpan({
+                  'Moral: ': Formats.bodyLarge,
+                  ship.crewMorale.toString(): Formats.bodyMedium,
+                }, context),
               ],
             ),
           ],
@@ -125,7 +127,23 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
                 ),
               ],
             ),
-            SizedBox(width: 300, height: 10, child: pool.barWidget(300)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(width: 300, height: 10, child: pool.barWidget(300)),
+                Container(
+                  decoration: BoxDecoration(color: Colors.white),
+                  child: PopupMenuButton<Function>(
+                    onSelected: (callBack) {
+                      setState(() => callBack());
+                    },
+                    itemBuilder: (context) {
+                      return pool.popup;
+                    },
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

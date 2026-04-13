@@ -133,14 +133,14 @@ class _ShipCreationState extends State<ShipCreation> {
       return;
     } else {
       ShipStorage.saveShip(
-        Ship(
+        Ship.createNew(
           name: shipCreationNameNotifier.value!,
           size: shipCreationSizeNotifier.value!,
           hullSP: shipCreationHullSPNotifier.value!,
           rudderSP: shipCreationRudderSPNotifier.value!,
           sailSP: shipCreationSailSPNotifier.value!,
           hullDiceType: hullDieTypeNotifier.value!,
-          maxHullDice: hulldiceAmtNotifier.value!,
+          hullDiceAmt: hulldiceAmtNotifier.value!,
         ),
       );
       Navigator.pushReplacement(
