@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/data/app_data.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
-import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_border.dart';
 import 'package:kaehne_und_kraken/views/widgets/displays/formatted_text.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/app_bar_widget.dart';
@@ -21,10 +21,10 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
   @override
   void initState() {
     assert(
-      widget.shipIndex >= 0 && widget.shipIndex < ShipStorage.saves.length,
+      widget.shipIndex >= 0 && widget.shipIndex < AppData.saves.length,
       'Invalid Index ${widget.shipIndex} in ShipDetailsPage',
     );
-    ship = ShipStorage.saves[widget.shipIndex];
+    ship = AppData.saves[widget.shipIndex];
     super.initState();
   }
 

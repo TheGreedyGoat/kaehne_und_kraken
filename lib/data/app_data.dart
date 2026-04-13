@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/utility/file_loader.dart';
 
-//TODO: Migrate all file and save related functionality
 class AppData {
   static final ValueNotifier<List<Ship>> _savedShipsNotifier = ValueNotifier(
-    [],
+    List.empty(growable: true),
   );
+
+  static List get saves => _savedShipsNotifier.value;
+  static ValueNotifier get notifier => _savedShipsNotifier;
   static Map<String, Map<String, String>> gameRules = {};
 
   //   #####
@@ -26,7 +28,7 @@ class AppData {
 
   static Future<void> _loadShips() async {
     String mapListString = await FileLoader.readFile(shipSaveFileName, 'json');
-    late List<Ship> ships = [];
+    late List<Ship> ships = List.empty(growable: true);
 
     try {
       var maps = jsonDecode(mapListString);
@@ -43,6 +45,32 @@ class AppData {
     _savedShipsNotifier.value = ships;
   }
 
+  static void addNewShip(Ship ship) {
+    saves.add(ship);
+    updateShipFile();
+    refreshSavedShips();
+  }
+
+  static void deleteShipAt(int index) {
+    saves.removeAt(index);
+    refreshSavedShips();
+  }
+
+  static void refreshSavedShips() {
+    _savedShipsNotifier.value = _savedShipsNotifier.value.toList(
+      growable: true,
+    );
+    updateShipFile();
+  }
+
+  static void updateShipFile() {
+    FileLoader.writeFile(
+      jsonEncode([for (var s in saves) s.toJson()]),
+      shipSaveFileName,
+      'json',
+    );
+  }
+
   //  ######
   //  #     # #    # #      ######  ####
   //  #     # #    # #      #      #
@@ -50,5 +78,7 @@ class AppData {
   //  #   #   #    # #      #           #
   //  #    #  #    # #      #      #    #
   //  #     #  ####  ###### ######  ####
-  static Future<void> _loadRules() async {}
+  static Future<void> _loadRules() async {
+    //TODO
+  }
 }

@@ -132,17 +132,16 @@ class _ShipCreationState extends State<ShipCreation> {
       });
       return;
     } else {
-      ShipStorage.saveShip(
-        Ship.createNew(
-          name: shipCreationNameNotifier.value!,
-          size: shipCreationSizeNotifier.value!,
-          hullSP: shipCreationHullSPNotifier.value!,
-          rudderSP: shipCreationRudderSPNotifier.value!,
-          sailSP: shipCreationSailSPNotifier.value!,
-          hullDiceType: hullDieTypeNotifier.value!,
-          hullDiceAmt: hulldiceAmtNotifier.value!,
-        ),
+      Ship.createNew(
+        name: shipCreationNameNotifier.value!,
+        size: shipCreationSizeNotifier.value!,
+        hullSP: shipCreationHullSPNotifier.value!,
+        rudderSP: shipCreationRudderSPNotifier.value!,
+        sailSP: shipCreationSailSPNotifier.value!,
+        hullDiceType: hullDieTypeNotifier.value!,
+        hullDiceAmt: hulldiceAmtNotifier.value!,
       );
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

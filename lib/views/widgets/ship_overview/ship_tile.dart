@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/data/app_data.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
-import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/pages/ship_details_page.dart';
 
 class ShipTile extends StatefulWidget {
@@ -12,7 +12,7 @@ class ShipTile extends StatefulWidget {
 }
 
 class _ShipTileState extends State<ShipTile> {
-  Ship get ship => ShipStorage.saves[widget.index];
+  Ship get ship => AppData.saves[widget.index];
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -40,7 +40,7 @@ class _ShipTileState extends State<ShipTile> {
             ),
             PopupMenuItem(
               onTap: () {
-                ShipStorage.deleteShipAt(widget.index);
+                AppData.deleteShipAt(widget.index);
               },
               child: ListTile(
                 leading: Icon(Icons.delete_outlined),

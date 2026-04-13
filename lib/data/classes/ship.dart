@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
+import 'package:kaehne_und_kraken/data/app_data.dart';
 import 'package:kaehne_und_kraken/views/widgets/displays/formatted_text.dart';
 import 'package:kaehne_und_kraken/views/widgets/inputs/number_input.dart';
 
@@ -10,6 +10,8 @@ enum ShipSize { tiny, small, medium, large, huge }
 enum HullDice { d4, d6, d8 }
 
 class Ship {
+  bool isSaved = false;
+
   static const Map<HullDice, int> faces = {
     HullDice.d4: 4,
     HullDice.d6: 6,
@@ -110,6 +112,8 @@ class Ship {
 
     //===OTHER===//
     _crewMorale = AbilityScore(10);
+
+    save();
   }
 
   Ship.jackdaw()
@@ -154,7 +158,8 @@ class Ship {
       hullDice = ExpandableDicePool.fromJson(json['hullDice']),
       crewActions = CrewActions.fromJson(json['crewActions']),
       _agilityScore = AbilityScore(json['agilityScore']),
-      _crewMorale = AbilityScore(json['crewMorale']);
+      _crewMorale = AbilityScore(json['crewMorale']),
+      isSaved = true;
 
   void increaseDecreaseMorale(int amount) {
     crewMorale.score += amount;
@@ -163,7 +168,14 @@ class Ship {
   }
 
   void save() {
-    ShipStorage.updateSaveFile();
+    if (!isSaved) {
+      AppData.addNewShip(this);
+      isSaved = true;
+    }
+  }
+
+  static void updateShips() {
+    AppData.updateShipFile();
   }
 
   @override

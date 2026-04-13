@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
-import 'package:kaehne_und_kraken/utility/file_loader.dart';
 
 final ValueNotifier<List<Widget>> rulesWidgetsNotifier = ValueNotifier(
   List.empty(),
@@ -19,43 +16,3 @@ final ValueNotifier<ShipSize?> shipCreationSizeNotifier = ValueNotifier(null);
 final ValueNotifier<int?> shipCreationHullSPNotifier = ValueNotifier(null);
 final ValueNotifier<int?> shipCreationSailSPNotifier = ValueNotifier(null);
 final ValueNotifier<int?> shipCreationRudderSPNotifier = ValueNotifier(null);
-
-class ShipStorage {
-  static final ValueNotifier<List<Ship>> _notifier = ValueNotifier([]);
-
-  static ValueNotifier<List<Ship>> get notifier => _notifier;
-  static List<Ship> get saves => _notifier.value;
-  static set saves(List<Ship> value) {
-    _notifier.value = value;
-    updateSaveFile();
-  }
-
-  static void saveShip(Ship ship) {
-    //? Save in runtime
-    var lCopy = saves.toList(growable: true);
-    lCopy.add(ship);
-    saves = lCopy;
-
-    //? Save persistent
-    saves = lCopy;
-  }
-
-  static void deleteShipAt(int index) {
-    var lCopy = saves.toList(growable: true);
-    lCopy.removeAt(index);
-
-    saves = lCopy;
-  }
-
-  static void updateSaveFile() {
-    try {
-      FileLoader.writeFile(
-        jsonEncode([for (var s in saves) s.toJson()]),
-        shipSaveFileName,
-        'json',
-      );
-    } on JsonUnsupportedObjectError catch (e) {
-      print(e.cause);
-    }
-  }
-}

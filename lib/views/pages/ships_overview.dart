@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/data/app_data.dart';
 import 'package:kaehne_und_kraken/data/colors.dart';
-import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/pages/ship_creation.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_overview/ship_tile.dart';
 
@@ -13,9 +13,9 @@ class ShipsOverview extends StatefulWidget {
 
 class _ShipsOverviewState extends State<ShipsOverview> {
   List<Widget> _listChildren() {
-    return ShipStorage.saves.isNotEmpty
+    return AppData.saves.isNotEmpty
         ? [
-            for (int i = 0; i < ShipStorage.saves.length; i++)
+            for (int i = 0; i < AppData.saves.length; i++)
               Column(
                 children: [
                   ShipTile(index: i),
@@ -46,7 +46,7 @@ class _ShipsOverviewState extends State<ShipsOverview> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: ShipStorage.notifier,
+      valueListenable: AppData.notifier,
       builder: (context, foundShips, child) {
         return ListView(children: _listChildren());
       },
