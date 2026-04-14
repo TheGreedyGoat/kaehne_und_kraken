@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/app_data.dart';
-import 'package:kaehne_und_kraken/data/colors.dart';
+import 'package:kaehne_und_kraken/data/styles/colors.dart';
 import 'package:kaehne_und_kraken/views/pages/ship_creation.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_overview/ship_tile.dart';
 

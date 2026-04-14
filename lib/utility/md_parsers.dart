@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_md/flutter_md.dart';
-
-const Color tableColor = Color.fromARGB(255, 207, 216, 147);
+import 'package:kaehne_und_kraken/data/styles/colors.dart';
 
 class MyMDTable {
   List<String> header = List.empty(growable: true);
@@ -18,7 +17,6 @@ class MyMDTable {
       }
     }
   }
-
   Table toTableWidget() {
     return Table(
       children: [
@@ -28,7 +26,9 @@ class MyMDTable {
               TableCell(
                 child: Text(
                   head,
-                  style: TextStyle(fontWeight: FontWeight(700)),
+                  style: TextStyle(
+                    fontWeight: FontWeight(700),
+                  ),
                 ),
               ),
           ],
@@ -41,13 +41,18 @@ class MyMDTable {
                 TableCell(
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 2.0, right: 2.0),
+                      padding: const EdgeInsets.only(
+                        left: 2.0,
+                        right: 2.0,
+                      ),
                       child: Text(cell),
                     ),
                   ),
                 ),
             ],
-            decoration: BoxDecoration(color: i % 2 == 1 ? tableColor : null),
+            decoration: BoxDecoration(
+              color: i % 2 == 1 ? noteColor : null,
+            ),
           ),
       ],
     );

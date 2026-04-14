@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaehne_und_kraken/data/colors.dart';
+import 'package:kaehne_und_kraken/data/styles/colors.dart';
 import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
 
 class NumberInput extends StatefulWidget {

@@ -1,4 +1,3 @@
-## Allgemeines
 ### Das Schlachtfeld
 
 Eine Wabe während eines Schiffskampfes repräsentiert einen Bereich von 9m (das entspricht 30 ft. oder 6 Standardfeldern) Jedes Feld kann grundsätzlich nur von einem Schiff/ einer Kreatur belegt werden.
