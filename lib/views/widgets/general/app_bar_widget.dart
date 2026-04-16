@@ -18,10 +18,12 @@ class AppBarWidget extends AppBar {
          ),
 
          centerTitle: centerTitle,
-         title: TextFormatting.textSpan({
-           header: Formats.titleLarge,
-           ?subHeader: Formats.bodyMedium,
-         }, context),
+         title: TextFormatting.textSpan(
+           {
+             header: Formats.titleLarge,
+             ?subHeader: Formats.bodyMedium,
+           },
+         ),
 
          //  Text(
          //    header,

@@ -18,7 +18,6 @@ class RuleWidget extends StatelessWidget {
         TextFormatting.text(
           title,
           Formats.titleMedium,
-          context,
         ),
         child,
       ],

@@ -3,8 +3,8 @@ import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/pages/rules_page.dart';
 import 'package:kaehne_und_kraken/views/pages/ship_creation.dart';
 import 'package:kaehne_und_kraken/views/pages/ships_overview.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_border.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/app_bar_widget.dart';
-import 'package:kaehne_und_kraken/views/widgets/general/body_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/navbar_widget.dart';
 
 const List<Widget> pages = [ShipsOverview(), RulesPage()];
@@ -23,7 +23,7 @@ class WidgetTree extends StatelessWidget {
             context: context,
             header: pageTitles[selectedPage],
           ),
-          body: BodyWidget(child: pages[selectedPage]),
+          body: StatBlockBorder(child: pages[selectedPage]),
 
           bottomNavigationBar: NavbarWidget(),
           floatingActionButton: selectedPage == 0

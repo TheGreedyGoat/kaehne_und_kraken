@@ -132,7 +132,7 @@ class _ShipCreationState extends State<ShipCreation> {
       });
       return;
     } else {
-      Ship.createNew(
+      Ship.create(
         name: shipCreationNameNotifier.value!,
         size: shipCreationSizeNotifier.value!,
         hullSP: shipCreationHullSPNotifier.value!,

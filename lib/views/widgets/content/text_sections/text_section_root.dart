@@ -3,6 +3,7 @@ import 'package:flutter_md/flutter_md.dart';
 import 'package:kaehne_und_kraken/utility/text_section.dart';
 import 'package:kaehne_und_kraken/views/widgets/content/text_sections/text_section_expandable.dart';
 import 'package:kaehne_und_kraken/views/widgets/content/text_sections/text_section_fixed.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_tile.dart';
 import 'package:kaehne_und_kraken/views/widgets/displays/formatted_text.dart';
 
 enum TextSectionDisplay { fixed, expandable }
@@ -29,9 +30,15 @@ class TextSectionWidget extends StatelessWidget {
   static Widget displayBlock(MD$Block block, BuildContext context) {
     switch (block.type) {
       case 'table':
-        return fromTableBlock(block as MD$Table, context);
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: fromTableBlock(block as MD$Table, context),
+        );
       default:
-        return TextFormatting.text(block.text, Formats.bodyMedium, context);
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: TextFormatting.text(block.text, Formats.bodyMedium),
+        );
     }
   }
   //  #######
@@ -55,7 +62,6 @@ class TextSectionWidget extends StatelessWidget {
                   child: TextFormatting.text(
                     span.text,
                     Formats.bodyMedium,
-                    context,
                     700,
                   ),
                 ),
@@ -74,7 +80,6 @@ class TextSectionWidget extends StatelessWidget {
                     child: TextFormatting.text(
                       span.text,
                       Formats.bodySmall,
-                      context,
                     ),
                   ),
             ],
@@ -88,5 +93,17 @@ class TextSectionWidget extends StatelessWidget {
       padding: EdgeInsets.only(left: leftPadding),
       child: child,
     );
+  }
+
+  static Widget heading({
+    required MD$Heading heading,
+    required BuildContext context,
+  }) {
+    Widget text = TextFormatting.fromHeading(heading);
+    return heading.level <= 3
+        ? StatblockTile(
+            children: [text],
+          )
+        : text;
   }
 }

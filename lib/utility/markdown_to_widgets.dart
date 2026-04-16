@@ -18,15 +18,13 @@ class MarkdownToWidgets {
       if (checkHeading(blocks[i]) <= ruleHeadLevel) {
         int j = i + 1;
 
-        while (j < blocks.length &&
-            checkHeading(blocks[j]) <= ruleHeadLevel) {
+        while (j < blocks.length && checkHeading(blocks[j]) <= ruleHeadLevel) {
           widgets.add(
             RuleWidget(
               title: blocks[i].text,
               child: TextFormatting.text(
                 blocks[j].text,
                 Formats.bodyMedium,
-                context,
               ),
             ),
           );

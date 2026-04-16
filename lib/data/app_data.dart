@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter_md/flutter_md.dart';
 import 'package:kaehne_und_kraken/utility/text_section.dart';
@@ -143,9 +144,9 @@ class AppData {
     ruleSections = TextSection.fromMDBlocks(md.blocks);
   }
 
-  static TextSection? tryFindSection(String title, List<TextSection> tree) {
+  static TextSection tryFindSection(String title, List<TextSection> tree) {
     for (var section in tree) {
-      if (section.heading == title) {
+      if (section.heading.text == title) {
         return section;
       }
       var sub = tryFindSection(title, section.subsections);

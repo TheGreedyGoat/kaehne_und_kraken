@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/data/app_data.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
+import 'package:kaehne_und_kraken/views/widgets/content/text_sections/text_section_root.dart';
+import 'package:kaehne_und_kraken/views/widgets/displays/custom_popup.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/dropdown.dart';
 import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_creation/ship_creation_structure_points.dart';
@@ -57,6 +60,15 @@ class _ShipCreationDefensesState extends State<ShipCreationDefenses> {
                   DropdownMenuItem(value: die, child: Text(die.name)),
               ],
               listener: hullDiceTypeNotifier,
+            ),
+            CustomPopup(
+              popupContent: TextSectionWidget(
+                section: AppData.tryFindSection(
+                  'Grössenklasse (GK)',
+                  AppData.ruleSections,
+                ),
+              ),
+              child: Icon(Icons.help),
             ),
           ],
         ),

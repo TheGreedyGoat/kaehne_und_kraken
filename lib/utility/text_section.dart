@@ -1,5 +1,4 @@
 import 'package:flutter_md/flutter_md.dart';
-import 'package:markdown/markdown.dart';
 
 enum HeadingLevel { h1, h2, h3, h4, h5, h6, none }
 
@@ -94,9 +93,6 @@ class TextSection {
     String result = '\n${' ' * level} h$level :$heading\n';
     for (var orph in content) {
       result += '${' ' * level}${orph.text}\n';
-    }
-    for (var sub in subsections) {
-      print('${' ' * level}$sub');
     }
     return result;
   }

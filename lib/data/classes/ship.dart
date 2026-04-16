@@ -85,7 +85,7 @@ class Ship {
     return size.index == 0 ? 0.5 : size.index.toDouble();
   }
 
-  Ship.createNew({
+  Ship.create({
     required this.name,
     required this.size,
     required int hullSP,
@@ -93,6 +93,7 @@ class Ship {
     required int rudderSP,
     required HullDice hullDiceType,
     required int hullDiceAmt,
+    bool save = true,
   }) {
     this.hullSP = StructurePoints.create(hullSP);
     this.sailSP = StructurePoints.create(sailSP);
@@ -113,11 +114,11 @@ class Ship {
     //===OTHER===//
     _crewMorale = AbilityScore(10);
 
-    save();
+    if (save) this.save();
   }
 
-  Ship.jackdaw()
-    : this.createNew(
+  Ship.jackdaw([bool save = true])
+    : this.create(
         name: 'Jackdaw',
         size: ShipSize.medium,
         hullSP: 100,
@@ -125,9 +126,10 @@ class Ship {
         rudderSP: 30,
         hullDiceType: HullDice.d4,
         hullDiceAmt: 10,
+        save: save,
       );
-  Ship.queenAnne()
-    : this.createNew(
+  Ship.queenAnne([bool save = true])
+    : this.create(
         name: 'Queen annes Revenge',
         size: ShipSize.huge,
         hullSP: 350,
@@ -135,6 +137,7 @@ class Ship {
         rudderSP: 100,
         hullDiceType: HullDice.d8,
         hullDiceAmt: 15,
+        save: save,
       );
 
   Map<String, dynamic> toJson() => {
@@ -344,14 +347,14 @@ class CrewActions extends ValuePool {
   List<NumInputAction> inputActions(BuildContext context) {
     return [
       NumInputAction(
-        label: TextFormatting.text('VERL', Formats.bodyMedium, context),
+        label: TextFormatting.text('VERL', Formats.bodyMedium),
         backgroundColor: Colors.red,
         onPressed: (amount) {
           losses(amount);
         },
       ),
       NumInputAction(
-        label: TextFormatting.text('VERW', Formats.bodyMedium, context),
+        label: TextFormatting.text('VERW', Formats.bodyMedium),
         backgroundColor: Colors.yellow,
         onPressed: (amount) {
           reduce(amount);

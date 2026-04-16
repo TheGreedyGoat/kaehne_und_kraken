@@ -47,7 +47,6 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
                 TextFormatting.text(
                   'Strukturpunkte:',
                   Formats.titleLarge,
-                  context,
                 ),
                 SizedBox(height: 5.0),
                 _displaySP(ship.hullSP, 'Rumpf'),
@@ -61,19 +60,25 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
 
             StatblockTile(
               children: [
-                TextFormatting.textSpan(<String, Formats>{
-                  'Agilität: ': Formats.bodyLarge,
-                  ship.agilityScore.toString(): Formats.bodyMedium,
-                }, context),
-                TextFormatting.textSpan(<String, Formats>{
-                  'Beschleunigungsbous: ': Formats.bodyLarge,
-                  TextFormatting.signedNumber(ship.accelerationMod):
-                      Formats.bodyMedium,
-                }, context),
-                TextFormatting.textSpan(<String, Formats>{
-                  'Wendekreis: ': Formats.bodyLarge,
-                  '${ship.hexPerTurn}': Formats.bodyMedium,
-                }, context),
+                TextFormatting.textSpan(
+                  <String, Formats>{
+                    'Agilität: ': Formats.bodyLarge,
+                    ship.agilityScore.toString(): Formats.bodyMedium,
+                  },
+                ),
+                TextFormatting.textSpan(
+                  <String, Formats>{
+                    'Beschleunigungsbous: ': Formats.bodyLarge,
+                    TextFormatting.signedNumber(ship.accelerationMod):
+                        Formats.bodyMedium,
+                  },
+                ),
+                TextFormatting.textSpan(
+                  <String, Formats>{
+                    'Wendekreis: ': Formats.bodyLarge,
+                    '${ship.hexPerTurn}': Formats.bodyMedium,
+                  },
+                ),
               ],
             ),
             StatblockTile(
@@ -82,14 +87,15 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
                   child: TextFormatting.text(
                     'Crew',
                     Formats.titleMedium,
-                    context,
                   ),
                 ),
                 _displaySP(ship.crewActions, 'Crewaktionen'),
-                TextFormatting.textSpan({
-                  'Moral: ': Formats.bodyLarge,
-                  ship.crewMorale.toString(): Formats.bodyMedium,
-                }, context),
+                TextFormatting.textSpan(
+                  {
+                    'Moral: ': Formats.bodyLarge,
+                    ship.crewMorale.toString(): Formats.bodyMedium,
+                  },
+                ),
               ],
             ),
           ],
@@ -119,11 +125,10 @@ class _ShipDetailsPageState extends State<ShipDetailsPage> {
           children: [
             Row(
               children: [
-                TextFormatting.text('$name:', Formats.titleMedium, context),
+                TextFormatting.text('$name:', Formats.titleMedium),
                 TextFormatting.text(
                   " ${pool.current} / ${pool.limit} / ${pool.capacity}",
                   Formats.titleSmall,
-                  context,
                 ),
               ],
             ),

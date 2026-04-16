@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kaehne_und_kraken/data/app_data.dart';
 import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/data/styles/colors.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
+import 'package:kaehne_und_kraken/views/widgets/content/text_sections/text_section_root.dart';
+import 'package:kaehne_und_kraken/views/widgets/displays/custom_popup.dart';
 import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
 import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_tile.dart';
 
@@ -34,9 +37,22 @@ class _ShipCreationTitleState extends State<ShipCreationTitle> {
           width: 300.0,
           child: ListTile(
             contentPadding: EdgeInsets.all(0.0),
-            title: Text(
-              'Grössenkategorie',
-              style: Theme.of(context).textTheme.titleSmall,
+            title: Row(
+              children: [
+                Text(
+                  'Grössenkategorie',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                CustomPopup(
+                  popupContent: TextSectionWidget(
+                    section: AppData.tryFindSection(
+                      'Grössenklasse (GK)',
+                      AppData.ruleSections,
+                    ),
+                  ),
+                  child: Icon(Icons.help),
+                ),
+              ],
             ),
 
             trailing: DropdownButton(
