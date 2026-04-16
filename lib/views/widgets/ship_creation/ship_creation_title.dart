@@ -3,7 +3,7 @@ import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/data/styles/colors.dart';
 import 'package:kaehne_und_kraken/utility/value_notifiers.dart';
 import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
-import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_tile.dart';
 
 class ShipCreationTitle extends StatefulWidget {
   final bool alert;

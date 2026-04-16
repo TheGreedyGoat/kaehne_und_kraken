@@ -3,7 +3,7 @@ import 'package:kaehne_und_kraken/data/classes/ship.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/dropdown.dart';
 import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_creation/ship_creation_structure_points.dart';
-import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_tile.dart';
 
 class ShipCreationDefenses extends StatefulWidget {
   final bool alert;

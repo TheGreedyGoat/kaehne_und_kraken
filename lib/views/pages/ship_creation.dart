@@ -7,7 +7,7 @@ import 'package:kaehne_und_kraken/views/widgets/general/body_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/inputs/input_field.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_creation/ship_creation_defenses.dart';
 import 'package:kaehne_und_kraken/views/widgets/ship_creation/ship_creation_title.dart';
-import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_tile.dart';
 
 class ShipCreation extends StatefulWidget {
   const ShipCreation({super.key});

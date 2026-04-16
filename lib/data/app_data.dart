@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_md/flutter_md.dart';
-import 'package:kaehne_und_kraken/utility/markdown_to_widgets.dart';
 import 'package:kaehne_und_kraken/utility/text_section.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -124,7 +123,7 @@ class AppData {
   //  #     #  ####  ###### ######  ####
 
   static late List<TextSection> ruleSections;
-  static const String rulesPath = 'assets/markdown/test.md';
+  static const String rulesPath = 'assets/markdown/rules.md';
   static Future<void> _loadRules() async {
     var loadedData = await loadAssetFile(path: rulesPath);
     _onRulesLoaded(loadedData);
@@ -141,14 +140,19 @@ class AppData {
 
   static void _onRulesLoaded(String data) async {
     Markdown md = Markdown.fromString(data);
-    print(md.blocks.length);
-    var l = TextSection.fromMDBlocks(md.blocks);
-    for (var sec in l) {
-      print(sec);
-    }
+    ruleSections = TextSection.fromMDBlocks(md.blocks);
   }
 
-  static bool isHeading(MD$Block block, int level) {
-    return (block is MD$Heading) && block.level == level;
+  static TextSection? tryFindSection(String title, List<TextSection> tree) {
+    for (var section in tree) {
+      if (section.heading == title) {
+        return section;
+      }
+      var sub = tryFindSection(title, section.subsections);
+      if (sub != TextSection.notFound) {
+        return sub;
+      }
+    }
+    return TextSection.notFound;
   }
 }

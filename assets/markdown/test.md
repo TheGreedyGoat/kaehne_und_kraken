@@ -1,4 +1,4 @@
-# Hauptabschnitt 1
+# Hauptabschnitt **Nummer** 1
 Dies ist der erste Absatz unter der Hauptüberschrift.
 
 ## Unterabschnitt 1.1

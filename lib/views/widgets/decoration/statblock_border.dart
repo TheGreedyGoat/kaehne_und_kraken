@@ -27,7 +27,7 @@ class StatBlockBorder extends StatelessWidget {
                 fit: BoxFit.fill,
               ),
             ),
-            child: Padding(padding: EdgeInsets.all(8.0), child: child),
+            child: Padding(padding: EdgeInsets.only(top: 8.0), child: child),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -4,29 +4,32 @@ import 'package:markdown/markdown.dart';
 enum HeadingLevel { h1, h2, h3, h4, h5, h6, none }
 
 class TextSection {
-  late final int level;
-  late final String title;
+  int get level => heading.level;
+  late final MD$Heading heading;
   late List<TextSection> subsections;
 
   late List<MD$Block> content;
 
+  static TextSection? _notFound;
+  static TextSection get notFound {
+    _notFound ??= TextSection(
+      heading: MD$Heading(text: '404', level: 6, spans: []),
+    );
+    return _notFound!;
+  }
+
   TextSection({
-    required MD$Heading headingBlock,
+    required this.heading,
     this.subsections = const [],
     this.content = const [],
-  }) {
-    level = headingBlock.level;
-    title = headingBlock.text;
-  }
+  });
 
   /// TextSection without a heading
   TextSection.orphan({
     this.subsections = const [],
     this.content = const [],
-  }) {
-    level = -1;
-    title = '';
-  }
+  }) : heading = MD$Heading(text: '', level: 1, spans: []);
+
   //======================================================
   static List<TextSection> fromMDBlocks(List<MD$Block> blocks) {
     if (blocks.isEmpty) return [];
@@ -45,28 +48,32 @@ class TextSection {
 
       int j = i + 1;
       while (j < blocks.length &&
+          // Until first heading
           checkHeadingType(blocks[j]) == HeadingLevel.none) {
-        content.add(blocks[j]);
+        if (blocks[j] is! MD$Spacer) {
+          content.add(blocks[j]);
+        }
 
         j++;
       } // end of orphans
 
+      content.add(MD$Spacer());
       List<MD$Block> recursionBlocks = List.empty(growable: true);
       while (j < blocks.length) {
         var currentBlock = blocks[j];
         HeadingLevel currentLevel = checkHeadingType(currentBlock);
 
-        if (currentLevel.index <= currentMainHeading.level) {
+        if (currentLevel.index <= mainLevel.index) {
           break;
         }
         recursionBlocks.add(blocks[j]);
         j++;
       }
-      subsections = fromMDBlocks(recursionBlocks);
 
+      subsections = fromMDBlocks(recursionBlocks);
       result.add(
         TextSection(
-          headingBlock: currentMainHeading,
+          heading: currentMainHeading,
           subsections: subsections.reversed.toList(),
           content: content,
         ),
@@ -84,12 +91,12 @@ class TextSection {
 
   @override
   String toString() {
-    String result = '\n${' ' * level} h$level :$title\n';
+    String result = '\n${' ' * level} h$level :$heading\n';
     for (var orph in content) {
-      result += '${orph.text}\n';
+      result += '${' ' * level}${orph.text}\n';
     }
     for (var sub in subsections) {
-      print(sub);
+      print('${' ' * level}$sub');
     }
     return result;
   }

@@ -78,8 +78,7 @@ Die Beschleunigung wird zu der aktuellen Geschwindigkeit addiert, bzw davon abge
 Zur Übersicht wird die Geschwindigkeit der Schiffe mithilfe von Tokens auf einer für alle sichtbaren Tafel dargestellt.
 
 ### Lenken
-Vor jeder Drehung mus
-s ein Schiff seinen Trägheits-Modifikator* in Feldern zurück legen, halb so viele bei halbem oder keinem Segel.
+Vor jeder Drehung muss ein Schiff seinen Trägheits-Modifikator* in Feldern zurück legen, halb so viele bei halbem oder keinem Segel.
 
 ### Bewegung
 

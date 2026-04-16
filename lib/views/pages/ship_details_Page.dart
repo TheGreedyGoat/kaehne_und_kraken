@@ -6,7 +6,7 @@ import 'package:kaehne_und_kraken/views/widgets/displays/formatted_text.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/app_bar_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/general/body_widget.dart';
 import 'package:kaehne_und_kraken/views/widgets/inputs/number_input.dart';
-import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_tile.dart';
 
 class ShipDetailsPage extends StatefulWidget {
   final int shipIndex;

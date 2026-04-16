@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaehne_und_kraken/data/styles/colors.dart';
-import 'package:kaehne_und_kraken/views/widgets/statblock/statblock_tile.dart';
+import 'package:kaehne_und_kraken/views/widgets/decoration/statblock_tile.dart';
 
 class NumberInput extends StatefulWidget {
   final String? title;
