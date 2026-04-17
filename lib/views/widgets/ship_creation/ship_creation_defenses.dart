@@ -64,7 +64,7 @@ class _ShipCreationDefensesState extends State<ShipCreationDefenses> {
             CustomPopup(
               popupContent: TextSectionWidget(
                 section: AppData.tryFindSection(
-                  'Grössenklasse (GK)',
+                  'Hüllenwürfel',
                   AppData.ruleSections,
                 ),
               ),

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_md/flutter_md.dart';
 import 'package:kaehne_und_kraken/data/styles/colors.dart';
 
-class MyMDTable {
+class MyMDTable extends StatelessWidget {
   List<String> header = List.empty(growable: true);
   List<List<String>> rows = List.empty(growable: true);
+
   MyMDTable(MD$Table tableBlock) {
     for (var item in tableBlock.header.cells) {
       header.add(item[0].text);
@@ -19,6 +20,7 @@ class MyMDTable {
   }
   Table toTableWidget() {
     return Table(
+      defaultColumnWidth: IntrinsicColumnWidth(),
       children: [
         TableRow(
           children: [
@@ -56,5 +58,10 @@ class MyMDTable {
           ),
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return toTableWidget();
   }
 }

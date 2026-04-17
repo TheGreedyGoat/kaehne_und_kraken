@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_md/flutter_md.dart';
+import 'package:kaehne_und_kraken/data/styles/colors.dart';
+import 'package:kaehne_und_kraken/utility/md_parsers.dart';
 import 'package:kaehne_und_kraken/utility/text_section.dart';
 import 'package:kaehne_und_kraken/views/widgets/content/text_sections/text_section_expandable.dart';
 import 'package:kaehne_und_kraken/views/widgets/content/text_sections/text_section_fixed.dart';
@@ -50,42 +52,44 @@ class TextSectionWidget extends StatelessWidget {
   //     #    #    # #####  ###### ######
 
   static Widget fromTableBlock(MD$Table table, context) {
-    return Table(
-      defaultColumnWidth: IntrinsicColumnWidth(),
-      children: [
-        //====HEADER====//
-        TableRow(
-          children: [
-            for (var cell in table.header.cells)
-              for (var span in cell)
-                tableCell(
-                  child: TextFormatting.text(
-                    span.text,
-                    Formats.bodyMedium,
-                    700,
-                  ),
-                ),
-          ],
-        ),
+    return MyMDTable(table);
 
-        for (int i = 0; i < table.rows.length; i++)
-          TableRow(
-            decoration: BoxDecoration(
-              color: i % 2 == 0 ? Color(0xffe0e5c1) : null,
-            ),
-            children: [
-              for (var cell in table.rows[i].cells)
-                for (var span in cell)
-                  tableCell(
-                    child: TextFormatting.text(
-                      span.text,
-                      Formats.bodySmall,
-                    ),
-                  ),
-            ],
-          ),
-      ],
-    );
+    // Table(
+    //   defaultColumnWidth: IntrinsicColumnWidth(),
+    //   children: [
+    //     //====HEADER====//
+    //     TableRow(
+    //       children: [
+    //         for (var cell in table.header.cells)
+    //           for (var span in cell)
+    //             tableCell(
+    //               child: TextFormatting.text(
+    //                 span.text,
+    //                 Formats.bodyMedium,
+    //                 700,
+    //               ),
+    //             ),
+    //       ],
+    //     ),
+
+    //     for (int i = 0; i < table.rows.length; i++)
+    //       TableRow(
+    //         decoration: BoxDecoration(
+    //           color: i % 2 == 0 ? noteColor : null,
+    //         ),
+    //         children: [
+    //           for (var cell in table.rows[i].cells)
+    //             for (var span in cell)
+    //               tableCell(
+    //                 child: TextFormatting.text(
+    //                   span.text,
+    //                   Formats.bodySmall,
+    //                 ),
+    //               ),
+    //         ],
+    //       ),
+    //   ],
+    // );
   }
 
   static Widget tableCell({required Widget child, double leftPadding = 5.0}) {
